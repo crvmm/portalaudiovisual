@@ -23,7 +23,7 @@ export function Footer() {
             <p className="font-display text-3xl font-medium leading-none tracking-tight sm:text-4xl">
               Portal<span className="text-primary">.</span>Audiovisual
             </p>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">
               Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
             </p>
           </div>
@@ -33,7 +33,7 @@ export function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="text-sm text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-primary"
+                className="text-base text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-primary"
               >
                 {label}
               </Link>
@@ -41,7 +41,7 @@ export function Footer() {
           </nav>
         </div>
 
-        <p className="mt-14 text-xs text-muted-foreground">
+        <p className="mt-14 text-sm text-muted-foreground">
           © {new Date().getFullYear()} Portal Audiovisual
         </p>
       </div>
