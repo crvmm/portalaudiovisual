@@ -448,7 +448,7 @@ export function ProfileEditor() {
                   <button
                     type="button"
                     onClick={() => handleDeletePortfolio(item.id)}
-                    className="absolute right-2 top-2 rounded p-1 text-muted-foreground hover:bg-accent hover:text-red-400"
+                    className="absolute right-2 top-2 rounded p-1 text-muted-foreground hover:bg-accent hover:text-red-700"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -493,7 +493,7 @@ export function ProfileEditor() {
         </CardContent>
       </Card>
 
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-red-700">{error}</p>}
       {success && <p className="text-sm text-green-400">Perfil guardado correctamente</p>}
 
       <Button onClick={handleSave} disabled={saving} className="w-full sm:w-auto">

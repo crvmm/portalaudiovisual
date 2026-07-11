@@ -15,7 +15,7 @@ const variants = {
   ghost:
     "bg-transparent hover:bg-accent text-muted-foreground hover:text-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
   danger:
-    "bg-red-600/15 text-red-300 hover:bg-red-600/25 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+    "bg-red-600/10 text-red-700 hover:bg-red-600/15 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
 };
 
 const sizes = {

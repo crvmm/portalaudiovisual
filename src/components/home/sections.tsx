@@ -48,7 +48,7 @@ function HeroToolsVisual() {
           className={`hero-icon-float absolute flex flex-col items-center gap-2 ${className}`}
           style={{ animationDelay: delay }}
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-primary/25 bg-card/30 text-primary shadow-[0_8px_32px_oklch(0.78_0.145_78/0.15)] backdrop-blur-[2px] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:shadow-[0_12px_40px_oklch(0.78_0.145_78/0.25)]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-card text-primary shadow-[0_4px_20px_oklch(0.58_0.14_42/0.12)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:shadow-[0_8px_28px_oklch(0.58_0.14_42/0.18)]">
             <Icon className="h-6 w-6" strokeWidth={1.5} />
           </div>
           <span className="text-sm font-medium text-muted-foreground">
@@ -131,7 +131,7 @@ const features = [
 
 export function HeroSection() {
   return (
-    <section className="hero-spotlight relative overflow-hidden border-b border-border/80">
+    <section className="hero-spotlight relative overflow-hidden border-b border-border">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:py-28">
         <div className="relative z-10">
           <h1 className="font-display text-balance text-[2.35rem] leading-[1.02] font-medium tracking-tight sm:text-5xl lg:text-[3.6rem]">
@@ -152,7 +152,7 @@ export function HeroSection() {
             </Link>
             <Link
               href="/ofertas"
-              className="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/40 px-6 py-3.5 text-base font-medium backdrop-blur-[2px] transition-[background-color,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/30 hover:bg-accent"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-base font-medium transition-[background-color,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/35 hover:bg-accent"
             >
               Ver ofertas
             </Link>
@@ -192,7 +192,7 @@ export function CategoriesSection() {
             <Link
               key={slug}
               href={`/profesionales?categoria=${slug}`}
-              className="group inline-flex items-center gap-2.5 rounded-full border border-border/70 bg-card/40 px-4 py-2.5 text-base transition-[border-color,background-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/35 hover:bg-primary/10 hover:text-primary hover:shadow-[0_0_20px_oklch(0.78_0.145_78/0.12)]"
+              className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2.5 text-base transition-[border-color,background-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/40 hover:bg-primary/8 hover:text-primary hover:shadow-[0_4px_16px_oklch(0.58_0.14_42/0.1)]"
             >
               <Icon
                 className="h-4 w-4 shrink-0 text-primary/75 transition-colors group-hover:text-primary"
@@ -209,7 +209,7 @@ export function CategoriesSection() {
 
 export function ProfileTypesSection() {
   return (
-    <section className="border-y border-border/80 bg-surface py-16 sm:py-20">
+    <section className="border-y border-border bg-surface py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
           Tres formas de entrar
@@ -223,10 +223,10 @@ export function ProfileTypesSection() {
             <Link
               key={title}
               href={href}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-card p-7 transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_20px_48px_oklch(0.05_0.01_58/0.4)]"
+              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-7 transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_12px_32px_oklch(0.58_0.14_42/0.1)]"
             >
               <div>
-                <div className="mb-6 inline-flex rounded-xl border border-border/60 bg-background/60 p-3 text-primary">
+                <div className="mb-6 inline-flex rounded-xl border border-border bg-surface p-3 text-primary">
                   <Icon className="h-6 w-6" strokeWidth={1.5} />
                 </div>
                 <h3 className="font-display text-2xl font-medium">{title}</h3>
@@ -250,7 +250,7 @@ export function FeaturesSection() {
   return (
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card to-surface p-8 sm:p-12">
+        <div className="rounded-3xl border border-border bg-surface p-8 sm:p-12">
           <h2 className="font-display max-w-xl text-3xl font-medium tracking-tight sm:text-4xl">
             Herramientas que entienden el sector
           </h2>

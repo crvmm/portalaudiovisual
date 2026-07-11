@@ -60,7 +60,7 @@ export default async function ProfessionalsPage({
                 name="q"
                 defaultValue={params.q}
                 placeholder="Nombre, especialidad..."
-                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               />
             </div>
             <div>
@@ -72,7 +72,7 @@ export default async function ProfessionalsPage({
                 name="ciudad"
                 defaultValue={params.ciudad}
                 placeholder="Madrid, Barcelona..."
-                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               />
             </div>
             <div>
@@ -83,7 +83,7 @@ export default async function ProfessionalsPage({
                 id="categoria"
                 name="categoria"
                 defaultValue={params.categoria ?? ""}
-                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
+                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               >
                 <option value="">Todas</option>
                 {categories?.map((cat) => (

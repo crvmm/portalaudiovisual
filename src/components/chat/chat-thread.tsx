@@ -113,7 +113,7 @@ export function ChatThread({ conversationId, currentUserId, participants }: Chat
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="Escribe un mensaje..."
-          className="flex-1 rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary"
+          className="flex-1 rounded-lg border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-primary"
         />
         <Button type="submit" disabled={!text.trim() || sending} size="md">
           <Send className="h-4 w-4" />

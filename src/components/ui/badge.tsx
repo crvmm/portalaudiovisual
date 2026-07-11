@@ -9,10 +9,10 @@ interface BadgeProps {
 const variants = {
   default: "bg-secondary text-foreground",
   primary: "bg-primary/10 text-primary",
-  success: "bg-green-500/10 text-green-400",
-  warning: "bg-amber-500/10 text-amber-400",
+  success: "bg-green-600/10 text-green-700",
+  warning: "bg-amber-600/10 text-amber-800",
   muted: "bg-muted text-muted-foreground",
-  danger: "bg-red-500/10 text-red-400",
+  danger: "bg-red-600/10 text-red-700",
 };
 
 export function Badge({ children, variant = "default", className }: BadgeProps) {

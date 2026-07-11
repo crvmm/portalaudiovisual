@@ -11,7 +11,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="relative border-t border-border/80">
+    <footer className="relative border-t border-border bg-surface">
       <div
         className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
         aria-hidden="true"

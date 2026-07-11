@@ -67,7 +67,7 @@ export function ApplicationForm({ jobPostingId }: { jobPostingId: string }) {
         onChange={(e) => setBudget(e.target.value)}
       />
       {error && (
-        <p className="text-sm text-red-400">{error}</p>
+        <p className="text-sm text-red-700">{error}</p>
       )}
       <Button type="submit" disabled={loading} className="w-full">
         <Send className="h-4 w-4" />

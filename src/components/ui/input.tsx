@@ -16,13 +16,13 @@ export function Input({ label, error, className, id, ...props }: InputProps) {
       <input
         id={id}
         className={cn(
-          "w-full rounded-md border border-border bg-secondary px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring",
+          "w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring",
           error && "border-red-500",
           className
         )}
         {...props}
       />
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
     </div>
   );
 }
@@ -43,13 +43,13 @@ export function Textarea({ label, error, className, id, ...props }: TextareaProp
       <textarea
         id={id}
         className={cn(
-          "w-full rounded-md border border-border bg-secondary px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring min-h-[100px] resize-y",
+          "w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-ring min-h-[100px] resize-y",
           error && "border-red-500",
           className
         )}
         {...props}
       />
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
     </div>
   );
 }
@@ -70,7 +70,7 @@ export function Select({ label, error, className, id, children, ...props }: Sele
       <select
         id={id}
         className={cn(
-          "w-full rounded-md border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring",
+          "w-full rounded-md border border-border bg-card px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring",
           error && "border-red-500",
           className
         )}
@@ -78,7 +78,7 @@ export function Select({ label, error, className, id, children, ...props }: Sele
       >
         {children}
       </select>
-      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
     </div>
   );
 }

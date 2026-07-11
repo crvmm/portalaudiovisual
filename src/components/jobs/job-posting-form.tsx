@@ -462,7 +462,7 @@ export function JobPostingForm() {
                 </div>
               </div>
             )}
-            {error && <p className="text-red-400">{error}</p>}
+            {error && <p className="text-red-700">{error}</p>}
           </CardContent>
         </Card>
       )}
