@@ -11,32 +11,37 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="font-display text-xl font-medium">
-            Portal<span className="text-primary">.</span>Audiovisual
-          </p>
-          <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
-            Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
-          </p>
+    <footer className="relative border-t border-border/80">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent"
+        aria-hidden="true"
+      />
+
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div>
+            <p className="font-display text-3xl font-medium leading-none tracking-tight sm:text-4xl">
+              Portal<span className="text-primary">.</span>Audiovisual
+            </p>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
+            </p>
+          </div>
+
+          <nav className="grid grid-cols-2 gap-x-10 gap-y-3 sm:grid-cols-3">
+            {links.map(({ href, label }) => (
+              <Link
+                key={href}
+                href={href}
+                className="text-sm text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-primary"
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
         </div>
 
-        <nav className="flex flex-wrap gap-x-6 gap-y-2">
-          {links.map(({ href, label }) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-foreground"
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      <div className="border-t border-border py-5">
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="mt-14 text-xs text-muted-foreground">
           © {new Date().getFullYear()} Portal Audiovisual
         </p>
       </div>

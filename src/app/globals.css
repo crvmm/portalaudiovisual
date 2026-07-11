@@ -16,27 +16,29 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-surface: var(--surface);
+  --color-glow: var(--glow);
   --font-sans: var(--font-instrument-sans);
   --font-display: var(--font-fraunces);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 :root {
-  /* Warm studio blacks, tungsten accent — no pure #000/#fff */
-  --background: oklch(0.145 0.014 58);
-  --foreground: oklch(0.93 0.018 82);
-  --surface: oklch(0.175 0.016 56);
-  --primary: oklch(0.74 0.13 78);
-  --primary-foreground: oklch(0.17 0.02 58);
-  --secondary: oklch(0.2 0.014 56);
-  --secondary-foreground: oklch(0.9 0.015 82);
-  --muted: oklch(0.19 0.012 55);
-  --muted-foreground: oklch(0.62 0.02 75);
-  --accent: oklch(0.23 0.018 60);
-  --accent-foreground: oklch(0.93 0.018 82);
-  --border: oklch(0.28 0.016 58);
-  --ring: oklch(0.74 0.13 78);
-  --card: oklch(0.165 0.015 57);
-  --card-foreground: oklch(0.93 0.018 82);
+  --background: oklch(0.12 0.016 58);
+  --foreground: oklch(0.94 0.02 85);
+  --surface: oklch(0.155 0.018 56);
+  --primary: oklch(0.78 0.145 78);
+  --primary-foreground: oklch(0.14 0.022 58);
+  --secondary: oklch(0.19 0.016 56);
+  --secondary-foreground: oklch(0.92 0.018 82);
+  --muted: oklch(0.17 0.014 55);
+  --muted-foreground: oklch(0.64 0.025 75);
+  --accent: oklch(0.22 0.02 60);
+  --accent-foreground: oklch(0.94 0.02 85);
+  --border: oklch(0.26 0.018 58);
+  --ring: oklch(0.78 0.145 78);
+  --card: oklch(0.145 0.017 57);
+  --card-foreground: oklch(0.94 0.02 85);
+  --glow: oklch(0.78 0.145 78 / 0.22);
 }
 
 body {
@@ -52,14 +54,14 @@ body::before {
   position: fixed;
   inset: 0;
   z-index: 9999;
-  opacity: 0.035;
+  opacity: 0.028;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-repeat: repeat;
-  background-size: 180px 180px;
+  background-size: 200px 200px;
 }
 
 ::selection {
-  background: oklch(0.74 0.13 78 / 0.35);
+  background: oklch(0.78 0.145 78 / 0.38);
   color: var(--foreground);
 }
 
@@ -69,4 +71,79 @@ body::before {
 
 .text-balance {
   text-wrap: balance;
+}
+
+.hero-spotlight {
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 70% 20%,
+      oklch(0.78 0.145 78 / 0.14),
+      transparent 65%
+    ),
+    radial-gradient(
+      ellipse 50% 40% at 10% 80%,
+      oklch(0.55 0.08 45 / 0.08),
+      transparent 60%
+    );
+}
+
+.hero-panel {
+  background:
+    linear-gradient(
+      165deg,
+      oklch(0.17 0.02 58) 0%,
+      oklch(0.13 0.018 56) 55%,
+      oklch(0.11 0.016 54) 100%
+    );
+  box-shadow:
+    0 0 0 1px oklch(0.32 0.02 58 / 0.5),
+    0 24px 48px oklch(0.05 0.01 58 / 0.45),
+    inset 0 1px 0 oklch(0.9 0.02 85 / 0.06);
+}
+
+.btn-primary-glow {
+  box-shadow:
+    0 1px 0 oklch(0.9 0.04 85 / 0.2) inset,
+    0 8px 28px oklch(0.78 0.145 78 / 0.28);
+}
+
+.btn-primary-glow:hover {
+  box-shadow:
+    0 1px 0 oklch(0.9 0.04 85 / 0.25) inset,
+    0 12px 36px oklch(0.78 0.145 78 / 0.38);
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes glow-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.65;
+  }
+}
+
+.hero-icon-float {
+  animation: hero-float 5s var(--ease-out-expo) infinite;
+}
+
+.hero-glow-ring {
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-icon-float,
+  .hero-glow-ring {
+    animation: none;
+  }
 }

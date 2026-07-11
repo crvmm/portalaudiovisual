@@ -7,7 +7,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variants = {
   primary:
-    "bg-primary text-primary-foreground hover:brightness-110 transition-[filter] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+    "bg-primary text-primary-foreground btn-primary-glow hover:brightness-110 transition-[filter,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
   secondary:
     "bg-secondary text-secondary-foreground hover:bg-accent transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
   outline:
@@ -33,7 +33,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-md font-medium disabled:opacity-50 disabled:pointer-events-none",
+        "inline-flex items-center justify-center gap-2 rounded-full font-medium disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],
         className
