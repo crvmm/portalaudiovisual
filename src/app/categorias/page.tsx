@@ -16,10 +16,10 @@ export default async function CategoriesPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Categorías audiovisuales</h1>
+      <h1 className="text-2xl font-bold">Especialidades audiovisuales</h1>
       <p className="mt-2 max-w-2xl text-muted-foreground">
-        Sistema de clasificación especializado. Si no encuentras tu especialidad,
-        podrás proponer nuevas categorías.
+        Clasificación por profesiones y disciplinas del sector. Si no encuentras tu
+        especialidad, podrás proponer nuevas categorías.
       </p>
 
       <div className="mt-10 space-y-8">

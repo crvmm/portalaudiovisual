@@ -204,7 +204,7 @@ export default async function ProfessionalDetailPage({
           {portfolio && portfolio.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Porfolio</CardTitle>
+                <CardTitle>Portfolio</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 sm:grid-cols-2">

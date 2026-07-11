@@ -22,9 +22,9 @@ export default async function JobPostingsPage() {
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold">Ofertas y encargos</h1>
+          <h1 className="text-2xl font-bold">Ofertas de empleo y oportunidades</h1>
           <p className="mt-2 text-muted-foreground">
-            Empleo, freelance, colaboraciones y encargos del sector audiovisual
+            Indefinido, temporal, freelance, prácticas, colaboraciones y proyectos puntuales
           </p>
         </div>
         <Link

@@ -18,7 +18,7 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "Portal Audiovisual — Plataforma profesional audiovisual",
   description:
-    "Conecta profesionales, empresas y particulares del sector audiovisual. Porfolios, servicios, ofertas y coincidencias inteligentes.",
+    "Conecta profesionales, empresas y particulares del sector audiovisual. Empleo, proyectos, portfolios, servicios y coincidencias inteligentes.",
 };
 
 export default function RootLayout({

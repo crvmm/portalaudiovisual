@@ -15,21 +15,21 @@ const profileTypes = [
     index: "01",
     title: "Profesional",
     description:
-      "Porfolio, tarifas, disponibilidad y coincidencias con encargos reales.",
+      "Portfolio, tarifas y coincidencias con ofertas de empleo, proyectos y encargos.",
     href: "/auth/registro?tipo=professional",
   },
   {
     index: "02",
     title: "Empresa",
     description:
-      "Publica rodajes, busca crew y gestiona candidaturas desde un panel.",
+      "Publica vacantes (indefinido, temporal), proyectos freelance y gestiona candidaturas.",
     href: "/auth/registro?tipo=company",
   },
   {
     index: "03",
     title: "Particular",
     description:
-      "Contrata fotógrafos, videógrafos y editores para proyectos puntuales.",
+      "Contrata profesionales para sesiones, eventos o proyectos concretos.",
     href: "/auth/registro?tipo=individual",
   },
 ];
@@ -43,7 +43,7 @@ const features = [
   {
     title: "Agenda",
     description:
-      "Los autónomos marcan disponibilidad; los clientes la consultan antes de escribir.",
+      "Quienes trabajan por proyecto marcan disponibilidad; quienes contratan la consultan antes de contactar.",
   },
   {
     title: "Alertas",
@@ -62,15 +62,12 @@ export function HeroSection() {
     <section className="border-b border-border">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:py-24">
         <div>
-          <p className="font-mono text-xs tracking-[0.2em] text-primary uppercase">
-            00:00:00:00 · sector audiovisual
-          </p>
-          <h1 className="font-display mt-5 text-balance text-4xl leading-[1.08] font-medium tracking-tight sm:text-5xl lg:text-[3.25rem]">
-            El talento que buscas ya está en rodaje. Encuéntralo aquí.
+          <h1 className="font-display text-balance text-4xl leading-[1.08] font-medium tracking-tight sm:text-5xl lg:text-[3.25rem]">
+            Empleo, proyectos y talento audiovisual en un solo sitio.
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Profesionales, empresas y particulares con perfiles, ofertas y
-            servicios pensados para producción, no para LinkedIn genérico.
+            Para empresas que contratan en plantilla o por proyecto, profesionales
+            que buscan oportunidades y particulares que necesitan un servicio concreto.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-3">
             <Link
@@ -84,7 +81,7 @@ export function HeroSection() {
               href="/ofertas"
               className="inline-flex items-center gap-2 rounded-md border border-border px-5 py-2.5 text-sm font-medium transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent"
             >
-              Ver encargos
+              Ver ofertas
             </Link>
           </div>
         </div>
@@ -93,7 +90,7 @@ export function HeroSection() {
           {[
             { value: "40+", label: "especialidades" },
             { value: "3", label: "tipos de perfil" },
-            { value: "∞", label: "porfolios" },
+            { value: "∞", label: "portfolios" },
             { value: "1", label: "plataforma" },
           ].map((stat) => (
             <div key={stat.label} className="bg-surface px-5 py-6">
@@ -121,7 +118,7 @@ export function CategoriesSection() {
               Especialidades
             </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Categorías de rodaje, no etiquetas de empleo genérico.
+              Especialidades profesionales del audiovisual, no categorías genéricas de empleo.
             </p>
           </div>
           <Link
@@ -163,7 +160,7 @@ export function ProfileTypesSection() {
     <section className="border-y border-border bg-surface py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 className="font-display text-2xl font-medium sm:text-3xl">
-          ¿Quién eres en un rodaje?
+          ¿Cómo quieres usar la plataforma?
         </h2>
 
         <ul className="mt-10 divide-y divide-border">
@@ -206,8 +203,8 @@ export function FeaturesSection() {
             Hecha para cómo trabaja el sector
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Producción, freelance y contratación creativa: las herramientas
-            encajan con el flujo real, no con un CRM de oficina.
+            Empleo estable, freelance y contratación por proyecto: herramientas
+            pensadas para el sector audiovisual, no para un portal genérico.
           </p>
         </div>
 

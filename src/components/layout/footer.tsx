@@ -5,7 +5,7 @@ const links = [
   { href: "/ofertas", label: "Ofertas" },
   { href: "/servicios", label: "Servicios" },
   { href: "/categorias", label: "Categorías" },
-  { href: "/publicar", label: "Publicar encargo" },
+  { href: "/publicar", label: "Publicar oferta" },
   { href: "/auth/registro", label: "Registro" },
 ];
 
@@ -18,7 +18,7 @@ export function Footer() {
             Portal<span className="text-primary">.</span>Audiovisual
           </p>
           <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
-            Talento, encargos y servicios del sector audiovisual en un solo lugar.
+            Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
           </p>
         </div>
 

@@ -439,7 +439,7 @@ export function ProfileEditor() {
 
       {/* Portfolio */}
       <Card>
-        <CardHeader><CardTitle>Porfolio</CardTitle></CardHeader>
+        <CardHeader><CardTitle>Portfolio</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           {portfolio.length > 0 && (
             <div className="grid gap-3 sm:grid-cols-2">
@@ -487,7 +487,7 @@ export function ProfileEditor() {
             />
             <Button variant="outline" size="sm" onClick={handleAddPortfolio}>
               <Plus className="h-4 w-4" />
-              Añadir al porfolio
+              Añadir al portfolio
             </Button>
           </div>
         </CardContent>

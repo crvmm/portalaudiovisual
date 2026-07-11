@@ -45,7 +45,7 @@ export default async function ProfessionalsPage({
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-3xl font-medium">Profesionales</h1>
       <p className="mt-2 max-w-xl text-muted-foreground">
-        Talento por categoría, ciudad y disponibilidad
+        Talento por especialidad, ciudad y disponibilidad
       </p>
 
       <div className="mt-10 flex flex-col gap-10 lg:flex-row">

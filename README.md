@@ -1,6 +1,6 @@
 # Portal Audiovisual
 
-Plataforma profesional especializada en el sector audiovisual. Conecta profesionales, empresas y particulares con porfolios, servicios, ofertas, coincidencias inteligentes, calendario de disponibilidad y mensajería interna.
+Plataforma profesional especializada en el sector audiovisual. Conecta profesionales, empresas y particulares con empleo, proyectos, portfolios, servicios, coincidencias inteligentes, calendario de disponibilidad y mensajería interna.
 
 > **Identificadores:** app `Portal Audiovisual`, paquete npm `portal-audiovisual`, repo [crvmm/portalaudiovisual](https://github.com/crvmm/portalaudiovisual). No confundir con el repo anterior *Audiovisual Jobs*.
 
@@ -71,7 +71,7 @@ src/
 │   ├── auth/               # Login y registro
 │   ├── dashboard/          # Panel de control
 │   ├── profesionales/      # Buscador de profesionales
-│   ├── ofertas/            # Ofertas y encargos
+│   ├── ofertas/            # Ofertas de empleo y oportunidades
 │   ├── servicios/          # Marketplace de servicios
 │   └── categorias/         # Categorías audiovisuales
 ├── components/             # Componentes React
@@ -90,7 +90,7 @@ supabase/
 
 | Tipo | Tabla | Descripción |
 |------|-------|-------------|
-| `professional` | `professional_profiles` | Profesionales con porfolio, servicios y calendario |
+| `professional` | `professional_profiles` | Profesionales con portfolio, servicios y calendario |
 | `company` | `company_profiles` | Empresas que publican ofertas y buscan talento |
 | `individual` | `individual_profiles` | Particulares que contratan servicios |
 
@@ -99,9 +99,9 @@ supabase/
 - **Categorías jerárquicas** — Más de 40 especialidades audiovisuales, ampliables por usuarios
 - **Servicios de autónomos** — Precios, ejemplos, modalidad y condiciones
 - **Calendario de disponibilidad** — Días disponibles, ocupados, parciales y vacaciones
-- **Ofertas y encargos** — Empleo, freelance, prácticas, colaboraciones, encargos puntuales
+- **Ofertas y oportunidades** — Empleo (indefinido, temporal), freelance, prácticas, colaboraciones y proyectos puntuales
 - **Sistema de coincidencias** — Función `compute_job_match()` con puntuación ponderada
-- **Candidaturas** — Con porfolio, presupuesto y archivos adjuntos
+- **Candidaturas** — Con portfolio, presupuesto y archivos adjuntos
 - **Chat contextual** — Vinculado a ofertas, servicios o proyectos
 - **Valoraciones** — Puntuación multidimensional tras completar trabajos
 - **Notificaciones** — Preferencias personalizables por categoría, ubicación y presupuesto
@@ -144,7 +144,7 @@ Con Supabase local en marcha, accede al panel de administración en:
 | Bucket | Público | Uso |
 |--------|---------|-----|
 | `avatars` | Sí | Fotos de perfil |
-| `portfolios` | Sí | Trabajos del porfolio |
+| `portfolios` | Sí | Trabajos del portfolio |
 | `company-media` | Sí | Galería de empresas |
 | `service-media` | Sí | Ejemplos de servicios |
 | `documents` | No | CVs y documentos |
@@ -161,7 +161,7 @@ Con Supabase local en marcha, accede al panel de administración en:
 ## Funcionalidades implementadas
 
 ### Páginas de detalle
-- `/profesionales/[id]` — Perfil completo con porfolio, experiencia, tarifas, disponibilidad y servicios
+- `/profesionales/[id]` — Perfil completo con portfolio, experiencia, tarifas, disponibilidad y servicios
 - `/ofertas/[id]` — Detalle de oferta con requisitos, coincidencias y formulario de candidatura
 - `/servicios/[id]` — Detalle de servicio con precios, galería y calendario del profesional
 
@@ -172,7 +172,7 @@ Con Supabase local en marcha, accede al panel de administración en:
 
 ### Editor de perfil profesional
 - `/dashboard/perfil` — Datos, especialidades, tarifas, preferencias de trabajo
-- Gestión de porfolio (añadir/eliminar trabajos)
+- Gestión de portfolio (añadir/eliminar trabajos)
 - Subida de avatar a Storage
 
 ### Calendario de disponibilidad

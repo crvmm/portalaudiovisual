@@ -12,9 +12,9 @@ export default async function PublishPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Publicar oferta o encargo</h1>
+      <h1 className="text-2xl font-bold">Publicar oferta</h1>
       <p className="mt-2 text-muted-foreground">
-        Publica una oportunidad para que los profesionales adecuados la encuentren
+        Vacante de empleo, proyecto freelance o encargo puntual para el sector audiovisual
       </p>
       <div className="mt-8">
         <JobPostingForm />
