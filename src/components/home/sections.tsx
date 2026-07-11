@@ -1,5 +1,93 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import {
+  ArrowRight,
+  Aperture,
+  Camera,
+  Clapperboard,
+  Headphones,
+  Mic,
+  MonitorPlay,
+  Scissors,
+  Video,
+  type LucideIcon,
+} from "lucide-react";
+
+const heroTools: {
+  Icon: LucideIcon;
+  label: string;
+  className: string;
+  iconClassName?: string;
+}[] = [
+  {
+    Icon: Camera,
+    label: "Fotografía",
+    className: "left-[4%] top-[6%] sm:left-[8%] sm:top-[10%]",
+  },
+  {
+    Icon: Video,
+    label: "Vídeo",
+    className: "left-[38%] top-[2%] sm:left-[40%] sm:top-[4%]",
+    iconClassName: "h-6 w-6",
+  },
+  {
+    Icon: Mic,
+    label: "Sonido",
+    className: "right-[4%] top-[14%] sm:right-[10%] sm:top-[16%]",
+  },
+  {
+    Icon: Clapperboard,
+    label: "Producción",
+    className: "left-[2%] top-[44%] sm:left-[6%] sm:top-[46%]",
+  },
+  {
+    Icon: Scissors,
+    label: "Edición",
+    className: "left-[36%] top-[38%] sm:left-[38%] sm:top-[40%]",
+  },
+  {
+    Icon: MonitorPlay,
+    label: "Motion",
+    className: "right-[2%] top-[42%] sm:right-[8%] sm:top-[44%]",
+  },
+  {
+    Icon: Headphones,
+    label: "Post",
+    className: "bottom-[10%] left-[18%] sm:bottom-[12%] sm:left-[22%]",
+  },
+  {
+    Icon: Aperture,
+    label: "Color",
+    className: "right-[16%] bottom-[6%] sm:right-[20%] sm:bottom-[8%]",
+    iconClassName: "h-6 w-6",
+  },
+];
+
+function HeroToolsVisual() {
+  return (
+    <div
+      className="relative mx-auto aspect-[5/4] w-full max-w-md min-h-[17rem] rounded-lg border border-border bg-surface sm:min-h-[19rem] lg:mx-0 lg:max-w-none"
+      aria-hidden="true"
+    >
+      <div className="pointer-events-none absolute inset-5 rounded-sm border border-dashed border-border/70" />
+      <div className="pointer-events-none absolute left-5 top-5 h-3 w-3 border-l border-t border-primary/50" />
+      <div className="pointer-events-none absolute right-5 bottom-5 h-3 w-3 border-r border-b border-primary/50" />
+
+      {heroTools.map(({ Icon, label, className, iconClassName }) => (
+        <div
+          key={label}
+          className={`absolute flex flex-col items-center gap-1.5 ${className}`}
+        >
+          <div className="flex h-11 w-11 items-center justify-center rounded-md border border-border bg-card text-primary shadow-[0_1px_0_oklch(0.28_0.016_58)] sm:h-12 sm:w-12">
+            <Icon className={iconClassName ?? "h-5 w-5"} strokeWidth={1.5} />
+          </div>
+          <span className="max-w-[4.5rem] text-center text-[10px] leading-tight text-muted-foreground sm:max-w-none sm:text-[11px]">
+            {label}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 const categories = [
   { name: "Fotografía", slug: "fotografia", count: "12 roles" },
@@ -60,7 +148,7 @@ const features = [
 export function HeroSection() {
   return (
     <section className="border-b border-border">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end lg:py-24">
+      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:py-24">
         <div>
           <h1 className="font-display text-balance text-4xl leading-[1.08] font-medium tracking-tight sm:text-5xl lg:text-[3.25rem]">
             Empleo, proyectos y talento audiovisual en un solo sitio.
@@ -86,23 +174,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border">
-          {[
-            { value: "40+", label: "especialidades" },
-            { value: "3", label: "tipos de perfil" },
-            { value: "∞", label: "portfolios" },
-            { value: "1", label: "plataforma" },
-          ].map((stat) => (
-            <div key={stat.label} className="bg-surface px-5 py-6">
-              <p className="font-display text-3xl font-medium text-primary">
-                {stat.value}
-              </p>
-              <p className="mt-1 text-xs tracking-wide text-muted-foreground uppercase">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-        </div>
+        <HeroToolsVisual />
       </div>
     </section>
   );
