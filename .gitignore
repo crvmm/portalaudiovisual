@@ -47,3 +47,5 @@ supabase/.temp
 .open-next
 .dev.vars
 .wrangler
+wrangler.jsonc.bak
+.env.deploy

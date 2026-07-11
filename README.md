@@ -195,6 +195,8 @@ Privado — Todos los derechos reservados.
 
 ## Despliegue
 
+Ver guía completa: [docs/SETUP-MAC-MINI.md](docs/SETUP-MAC-MINI.md)
+
 ### Cloudflare Workers
 
 - **Proyecto:** `portalaudiovisual`
