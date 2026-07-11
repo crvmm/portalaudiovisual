@@ -39,7 +39,7 @@ const heroTools: {
 function HeroToolsVisual() {
   return (
     <div
-      className="relative mx-auto aspect-[5/4] w-full max-w-md min-h-[18rem] sm:min-h-[20rem] lg:mx-0 lg:max-w-none"
+      className="viewfinder-frame studio-grid relative mx-auto aspect-[5/4] w-full max-w-md min-h-[18rem] rounded-sm border border-border bg-surface/80 sm:min-h-[20rem] lg:mx-0 lg:max-w-none"
       aria-hidden="true"
     >
       {heroTools.map(({ Icon, label, className, delay }) => (
@@ -48,10 +48,10 @@ function HeroToolsVisual() {
           className={`hero-icon-float absolute flex flex-col items-center gap-2 ${className}`}
           style={{ animationDelay: delay }}
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-primary/20 bg-card text-primary shadow-[0_4px_20px_oklch(0.58_0.14_42/0.12)] transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:shadow-[0_8px_28px_oklch(0.58_0.14_42/0.18)]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.48_0.16_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.58_0.24_27/0.12)]">
             <Icon className="h-6 w-6" strokeWidth={1.5} />
           </div>
-          <span className="text-sm font-medium text-muted-foreground">
+          <span className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             {label}
           </span>
         </div>
@@ -78,12 +78,14 @@ const specialtyTags: { name: string; slug: string; Icon: LucideIcon }[] = [
 ];
 
 const profileTypes: {
+  index: string;
   title: string;
   description: string;
   href: string;
   Icon: LucideIcon;
 }[] = [
   {
+    index: "01",
     title: "Profesional",
     description:
       "Portfolio, tarifas y coincidencias con ofertas de empleo, proyectos y encargos.",
@@ -91,6 +93,7 @@ const profileTypes: {
     Icon: Users,
   },
   {
+    index: "02",
     title: "Empresa",
     description:
       "Publica vacantes (indefinido, temporal), proyectos freelance y gestiona candidaturas.",
@@ -98,6 +101,7 @@ const profileTypes: {
     Icon: Building2,
   },
   {
+    index: "03",
     title: "Particular",
     description:
       "Contrata profesionales para sesiones, eventos o proyectos concretos.",
@@ -108,21 +112,25 @@ const profileTypes: {
 
 const features = [
   {
+    index: "01",
     title: "Coincidencias",
     description:
       "Puntuación por categoría, ubicación, agenda, experiencia y presupuesto.",
   },
   {
+    index: "02",
     title: "Agenda",
     description:
       "Quienes trabajan por proyecto marcan disponibilidad; quienes contratan la consultan antes de contactar.",
   },
   {
+    index: "03",
     title: "Alertas",
     description:
       "Solo oportunidades que encajan con tu perfil y preferencias.",
   },
   {
+    index: "04",
     title: "Servicios",
     description:
       "Paquetes con precio, ejemplos y categoría: de sesión de foto a postproducción.",
@@ -134,9 +142,13 @@ export function HeroSection() {
     <section className="hero-spotlight relative overflow-hidden border-b border-border">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:py-28">
         <div className="relative z-10">
+          <p className="mb-6 inline-flex items-center gap-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            <span className="rec-dot rec-dot-pulse" aria-hidden="true" />
+            Plataforma sector audiovisual
+          </p>
           <h1 className="font-display text-balance text-[2.35rem] leading-[1.02] font-medium tracking-tight sm:text-5xl lg:text-[3.6rem]">
             El sector audiovisual,{" "}
-            <span className="text-primary">conectado de verdad</span>
+            <span className="text-stage">conectado</span> de verdad
           </h1>
           <p className="mt-7 max-w-lg text-base leading-relaxed text-muted-foreground sm:text-lg">
             Empleo en plantilla, proyectos freelance y servicios a medida. Una
@@ -145,14 +157,14 @@ export function HeroSection() {
           <div className="mt-11 flex flex-wrap items-center gap-3">
             <Link
               href="/profesionales"
-              className="btn-primary-glow inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-base font-medium text-primary-foreground transition-[filter,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:brightness-110"
+              className="btn-primary-glow inline-flex items-center gap-2 rounded-md bg-primary px-6 py-3.5 text-base font-medium text-primary-foreground transition-[filter,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:brightness-105"
             >
               Explorar talento
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/ofertas"
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3.5 text-base font-medium transition-[background-color,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/35 hover:bg-accent"
+              className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-6 py-3.5 text-base font-medium transition-[background-color,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/40 hover:bg-accent"
             >
               Ver ofertas
             </Link>
@@ -171,7 +183,10 @@ export function CategoriesSection() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+            <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+              Disciplinas
+            </p>
+            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl">
               Especialidades
             </h2>
             <p className="mt-3 max-w-lg text-base text-muted-foreground sm:text-lg">
@@ -187,15 +202,15 @@ export function CategoriesSection() {
           </Link>
         </div>
 
-        <div className="mt-10 flex flex-wrap gap-2.5">
+        <div className="mt-10 flex flex-wrap gap-2">
           {specialtyTags.map(({ name, slug, Icon }) => (
             <Link
               key={slug}
               href={`/profesionales?categoria=${slug}`}
-              className="group inline-flex items-center gap-2.5 rounded-full border border-border bg-card px-4 py-2.5 text-base transition-[border-color,background-color,color,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-primary/40 hover:bg-primary/8 hover:text-primary hover:shadow-[0_4px_16px_oklch(0.58_0.14_42/0.1)]"
+              className="tag-chip group inline-flex items-center gap-2 px-3.5 py-2 text-[0.9375rem]"
             >
               <Icon
-                className="h-4 w-4 shrink-0 text-primary/75 transition-colors group-hover:text-primary"
+                className="h-3.5 w-3.5 shrink-0 text-stage transition-colors group-hover:text-primary"
                 strokeWidth={1.75}
               />
               <span>{name}</span>
@@ -211,32 +226,38 @@ export function ProfileTypesSection() {
   return (
     <section className="border-y border-border bg-surface py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <h2 className="font-display text-3xl font-medium tracking-tight sm:text-4xl">
+        <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+          Perfiles
+        </p>
+        <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl">
           Tres formas de entrar
         </h2>
         <p className="mt-3 max-w-xl text-base text-muted-foreground sm:text-lg">
           Elige el perfil que encaja contigo y empieza en minutos.
         </p>
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
-          {profileTypes.map(({ title, description, href, Icon }) => (
+        <div className="mt-12 grid gap-px overflow-hidden rounded-md border border-border bg-border lg:grid-cols-3">
+          {profileTypes.map(({ index, title, description, href, Icon }) => (
             <Link
               key={title}
               href={href}
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-7 transition-[border-color,transform,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-[0_12px_32px_oklch(0.58_0.14_42/0.1)]"
+              className="group flex flex-col justify-between bg-card p-7 transition-[background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent"
             >
               <div>
-                <div className="mb-6 inline-flex rounded-xl border border-border bg-surface p-3 text-primary">
-                  <Icon className="h-6 w-6" strokeWidth={1.5} />
+                <div className="mb-6 flex items-center justify-between">
+                  <span className="font-mono text-sm text-muted-foreground">{index}</span>
+                  <div className="inline-flex rounded-md border border-border bg-surface p-2.5 text-stage transition-colors group-hover:border-primary/30 group-hover:text-primary">
+                    <Icon className="h-5 w-5" strokeWidth={1.5} />
+                  </div>
                 </div>
                 <h3 className="font-display text-2xl font-medium">{title}</h3>
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground">
                   {description}
                 </p>
               </div>
-              <span className="mt-8 inline-flex items-center gap-2 text-base font-medium text-primary">
+              <span className="mt-8 inline-flex items-center gap-2 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-primary">
                 Empezar
-                <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
               </span>
             </Link>
           ))}
@@ -250,31 +271,35 @@ export function FeaturesSection() {
   return (
     <section className="py-16 sm:py-24">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="rounded-3xl border border-border bg-surface p-8 sm:p-12">
-          <h2 className="font-display max-w-xl text-3xl font-medium tracking-tight sm:text-4xl">
-            Herramientas que entienden el sector
-          </h2>
-          <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
-            Empleo estable, freelance y contratación por proyecto en un mismo
-            entorno, pensado para quien trabaja en audiovisual.
-          </p>
+        <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+          Funciones
+        </p>
+        <h2 className="mt-2 font-display max-w-xl text-3xl font-medium tracking-tight sm:text-4xl">
+          Herramientas que entienden el sector
+        </h2>
+        <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          Empleo estable, freelance y contratación por proyecto en un mismo
+          entorno, pensado para quien trabaja en audiovisual.
+        </p>
 
-          <dl className="mt-12 grid gap-8 sm:grid-cols-2">
-            {features.map(({ title, description }) => (
-              <div
-                key={title}
-                className="border-t border-border/60 pt-6"
-              >
+        <dl className="mt-14 divide-y divide-border border-y border-border">
+          {features.map(({ index, title, description }) => (
+            <div
+              key={title}
+              className="grid gap-4 py-8 sm:grid-cols-[4rem_1fr] sm:gap-8"
+            >
+              <span className="font-mono text-sm font-medium text-stage">{index}</span>
+              <div>
                 <dt className="font-display text-xl font-medium text-foreground">
                   {title}
                 </dt>
-                <dd className="mt-2 text-base leading-relaxed text-muted-foreground">
+                <dd className="mt-2 max-w-xl text-base leading-relaxed text-muted-foreground">
                   {description}
                 </dd>
               </div>
-            ))}
-          </dl>
-        </div>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

@@ -21,7 +21,7 @@ export function Footer() {
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div>
             <p className="font-display text-3xl font-medium leading-none tracking-tight sm:text-4xl">
-              Portal<span className="text-primary">.</span>Audiovisual
+              Portal<span className="text-stage">.</span>Audiovisual
             </p>
             <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">
               Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
