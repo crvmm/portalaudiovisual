@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { HeaderAuth } from "@/components/layout/header-auth";
 
 const navItems = [
   { href: "/profesionales", label: "Profesionales" },
@@ -31,20 +32,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
-          <Link
-            href="/auth/login"
-            className="rounded-md px-3.5 py-2 text-[0.9375rem] text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-foreground"
-          >
-            Entrar
-          </Link>
-          <Link
-            href="/auth/registro"
-            className="btn-primary-glow rounded-md bg-primary px-4 py-2 text-[0.9375rem] font-medium text-primary-foreground transition-[filter,box-shadow] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:brightness-105"
-          >
-            Crear cuenta
-          </Link>
-        </div>
+        <HeaderAuth />
       </div>
     </header>
   );

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Mono, Fraunces, Instrument_Sans } from "next/font/google";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { AppShell } from "@/components/layout/app-shell";
 import "./globals.css";
 
 const instrumentSans = Instrument_Sans({
@@ -37,9 +36,7 @@ export default function RootLayout({
       <body
         className={`${instrumentSans.variable} ${fraunces.variable} ${dmMono.variable} min-h-screen antialiased`}
       >
-        <Header />
-        <main className="min-h-[calc(100vh-3.5rem)]">{children}</main>
-        <Footer />
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );

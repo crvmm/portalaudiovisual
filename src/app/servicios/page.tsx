@@ -107,7 +107,7 @@ export default async function ServicesPage() {
             Si ofreces servicios audiovisuales, publícalos desde tu perfil profesional.
           </p>
           <Link
-            href="/auth/registro?tipo=professional"
+            href="/?auth=register&tipo=professional"
             className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
           >
             Crear perfil profesional →

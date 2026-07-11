@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { MapPin, Star } from "lucide-react";
+import { ProfessionalsFilterForm } from "@/components/professionals/professionals-filter-form";
 
 interface SearchParams {
   categoria?: string;
@@ -52,56 +53,15 @@ export default async function ProfessionalsPage({
 
       <div className="mt-10 flex flex-col gap-10 lg:flex-row">
         <aside className="shrink-0 lg:w-56">
-          <form className="space-y-4 border-t border-border pt-6">
-            <div>
-              <label htmlFor="q" className="mb-1.5 block text-sm font-medium">
-                Buscar
-              </label>
-              <input
-                id="q"
-                name="q"
-                defaultValue={params.q}
-                placeholder="Nombre, especialidad..."
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label htmlFor="ciudad" className="mb-1.5 block text-sm font-medium">
-                Ciudad
-              </label>
-              <input
-                id="ciudad"
-                name="ciudad"
-                defaultValue={params.ciudad}
-                placeholder="Madrid, Barcelona..."
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
-              />
-            </div>
-            <div>
-              <label htmlFor="categoria" className="mb-1.5 block text-sm font-medium">
-                Categoría
-              </label>
-              <select
-                id="categoria"
-                name="categoria"
-                defaultValue={params.categoria ?? ""}
-                className="w-full rounded-md border border-border bg-card px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
-              >
-                <option value="">Todas</option>
-                {categories?.map((cat) => (
-                  <option key={cat.id} value={cat.slug}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button
-              type="submit"
-              className="w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
-            >
-              Filtrar
-            </button>
-          </form>
+          <ProfessionalsFilterForm
+            initialQuery={params.q}
+            initialCity={params.ciudad}
+            initialCategory={params.categoria}
+            categories={(categories ?? []).map((cat) => ({
+              value: cat.slug,
+              label: cat.name,
+            }))}
+          />
         </aside>
 
         <div className="flex-1">
@@ -169,7 +129,7 @@ export default async function ProfessionalsPage({
                   : "Sé de los primeros en crear un perfil y aparecer aquí."}
               </p>
               <Link
-                href="/auth/registro?tipo=professional"
+                href="/?auth=register&tipo=professional"
                 className="mt-6 inline-flex items-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-105"
               >
                 Crear perfil profesional

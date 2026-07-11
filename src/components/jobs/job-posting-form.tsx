@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Select } from "@/components/ui/input";
+import { Input, Textarea, Select, optionsFromRecord, optionsWithEmpty } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
@@ -227,34 +227,28 @@ export function JobPostingForm() {
                 id="posting_type"
                 label="Tipo de oportunidad *"
                 value={data.posting_type}
-                onChange={(e) => update("posting_type", e.target.value)}
-              >
-                {Object.entries(JOB_POSTING_TYPE_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </Select>
+                onChange={(value) => update("posting_type", value)}
+                options={optionsFromRecord(JOB_POSTING_TYPE_LABELS)}
+                placeholder="Seleccionar..."
+              />
               <Select
                 id="work_modality"
                 label="Modalidad *"
                 value={data.work_modality}
-                onChange={(e) => update("work_modality", e.target.value)}
-              >
-                {Object.entries(WORK_MODALITY_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </Select>
+                onChange={(value) => update("work_modality", value)}
+                options={optionsFromRecord(WORK_MODALITY_LABELS)}
+                placeholder="Seleccionar..."
+              />
             </div>
             <Select
               id="contract_type"
               label="Tipo de contrato"
               value={data.contract_type}
-              onChange={(e) => update("contract_type", e.target.value)}
-            >
-              <option value="">Seleccionar...</option>
-              {Object.entries(CONTRACT_TYPE_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </Select>
+              onChange={(value) => update("contract_type", value)}
+              options={optionsWithEmpty(CONTRACT_TYPE_LABELS, "Seleccionar...")}
+              isClearable
+              placeholder="Seleccionar..."
+            />
           </CardContent>
         </Card>
       )}
@@ -350,13 +344,11 @@ export function JobPostingForm() {
                 id="experience_required"
                 label="Experiencia requerida"
                 value={data.experience_required}
-                onChange={(e) => update("experience_required", e.target.value)}
-              >
-                <option value="">Cualquiera</option>
-                {Object.entries(EXPERIENCE_LEVEL_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>{label}</option>
-                ))}
-              </Select>
+                onChange={(value) => update("experience_required", value)}
+                options={optionsWithEmpty(EXPERIENCE_LEVEL_LABELS, "Cualquiera")}
+                isClearable
+                placeholder="Cualquiera"
+              />
               <Input
                 id="positions_count"
                 label="Número de plazas"

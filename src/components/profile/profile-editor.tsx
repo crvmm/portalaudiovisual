@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input, Textarea, Select } from "@/components/ui/input";
+import { Input, Textarea, Select, optionsWithEmpty } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
@@ -377,13 +377,11 @@ export function ProfileEditor() {
               id="experience_level"
               label="Nivel"
               value={data.experience_level}
-              onChange={(e) => update("experience_level", e.target.value)}
-            >
-              <option value="">Seleccionar...</option>
-              {Object.entries(EXPERIENCE_LEVEL_LABELS).map(([v, l]) => (
-                <option key={v} value={v}>{l}</option>
-              ))}
-            </Select>
+              onChange={(value) => update("experience_level", value)}
+              options={optionsWithEmpty(EXPERIENCE_LEVEL_LABELS, "Seleccionar...")}
+              isClearable
+              placeholder="Seleccionar..."
+            />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             <Input id="hourly_rate_min" label="Tarifa/hora mín (€)" type="number" value={data.hourly_rate_min} onChange={(e) => update("hourly_rate_min", e.target.value)} />

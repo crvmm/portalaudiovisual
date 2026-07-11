@@ -284,12 +284,14 @@ export function NotificationsPanel() {
               id="digest"
               label="Resumen periódico"
               value={prefs.digest_frequency}
-              onChange={(e) => setPrefs((p) => ({ ...p, digest_frequency: e.target.value }))}
-            >
-              <option value="none">Desactivado</option>
-              <option value="daily">Diario</option>
-              <option value="weekly">Semanal</option>
-            </Select>
+              onChange={(value) => setPrefs((p) => ({ ...p, digest_frequency: value }))}
+              options={[
+                { value: "none", label: "Desactivado" },
+                { value: "daily", label: "Diario" },
+                { value: "weekly", label: "Semanal" },
+              ]}
+              placeholder="Seleccionar..."
+            />
 
             <Input
               id="min_budget"

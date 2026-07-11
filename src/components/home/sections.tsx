@@ -52,7 +52,7 @@ function HeroToolsVisual() {
               className="hero-icon-float flex flex-col items-center gap-2"
               style={{ animationDelay: delay }}
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.48_0.16_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.58_0.24_27/0.12)]">
+              <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.52_0.19_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.52_0.19_285/0.16)]">
                 <Icon className="h-6 w-6" strokeWidth={1.5} />
               </div>
               <span className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
@@ -95,7 +95,7 @@ const profileTypes: {
     title: "Profesional",
     description:
       "Portfolio, tarifas y coincidencias con ofertas de empleo, proyectos y encargos.",
-    href: "/auth/registro?tipo=professional",
+    href: "/?auth=register&tipo=professional",
     Icon: Users,
   },
   {
@@ -103,7 +103,7 @@ const profileTypes: {
     title: "Empresa",
     description:
       "Publica vacantes (indefinido, temporal), proyectos freelance y gestiona candidaturas.",
-    href: "/auth/registro?tipo=company",
+    href: "/?auth=register&tipo=company",
     Icon: Building2,
   },
   {
@@ -111,7 +111,7 @@ const profileTypes: {
     title: "Particular",
     description:
       "Contrata profesionales para sesiones, eventos o proyectos concretos.",
-    href: "/auth/registro?tipo=individual",
+    href: "/?auth=register&tipo=individual",
     Icon: User,
   },
 ];
