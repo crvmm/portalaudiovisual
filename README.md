@@ -192,3 +192,25 @@ Con Supabase local en marcha, accede al panel de administración en:
 ## Licencia
 
 Privado — Todos los derechos reservados.
+
+## Despliegue
+
+### Cloudflare Workers
+
+- **Proyecto:** `portalaudiovisual`
+- **Cuenta:** Apps@crvmm.com
+- **URL:** https://portalaudiovisual.apps-852.workers.dev
+- **Deploy:** `npm run deploy`
+
+Variables de entorno en `wrangler.jsonc` (actualizar cuando configures Supabase):
+
+```json
+"vars": {
+  "NEXT_PUBLIC_SUPABASE_URL": "https://tu-proyecto.supabase.co",
+  "NEXT_PUBLIC_SUPABASE_ANON_KEY": "tu-anon-key"
+}
+```
+
+### GitHub
+
+- **Repositorio:** https://github.com/crvmm/portalaudiovisual
