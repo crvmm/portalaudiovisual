@@ -12,7 +12,9 @@
     "supabase:reset": "supabase db reset",
     "supabase:gen-types": "supabase gen types typescript --local > src/types/database.ts",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "build:pages": "bash scripts/prepare-pages-deploy.sh",
+    "deploy": "bash scripts/prepare-pages-deploy.sh && CLOUDFLARE_ACCOUNT_ID=852e6fbe0ecd3f7d68a85f820f49bf10 wrangler pages deploy --project-name=portalaudiovisual --branch=main --commit-dirty=true",
+    "deploy:workers": "opennextjs-cloudflare build && CLOUDFLARE_ACCOUNT_ID=852e6fbe0ecd3f7d68a85f820f49bf10 wrangler deploy --config wrangler.workers.jsonc",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {

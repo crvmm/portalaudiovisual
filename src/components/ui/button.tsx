@@ -6,11 +6,16 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: "bg-primary text-primary-foreground hover:opacity-90",
-  secondary: "bg-secondary text-secondary-foreground hover:bg-accent",
-  outline: "border border-border bg-transparent hover:bg-accent",
-  ghost: "bg-transparent hover:bg-accent text-muted-foreground hover:text-foreground",
-  danger: "bg-red-600/20 text-red-400 hover:bg-red-600/30",
+  primary:
+    "bg-primary text-primary-foreground hover:brightness-110 transition-[filter] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+  secondary:
+    "bg-secondary text-secondary-foreground hover:bg-accent transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+  outline:
+    "border border-border bg-transparent hover:bg-accent transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+  ghost:
+    "bg-transparent hover:bg-accent text-muted-foreground hover:text-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
+  danger:
+    "bg-red-600/15 text-red-300 hover:bg-red-600/25 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]",
 };
 
 const sizes = {
@@ -28,7 +33,7 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none",
+        "inline-flex items-center justify-center gap-2 rounded-md font-medium disabled:opacity-50 disabled:pointer-events-none",
         variants[variant],
         sizes[size],
         className

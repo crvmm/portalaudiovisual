@@ -42,15 +42,15 @@ export default async function ProfessionalsPage({
     .order("sort_order");
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Profesionales audiovisuales</h1>
-      <p className="mt-2 text-muted-foreground">
-        Encuentra talento especializado por categoría, ubicación y disponibilidad
+    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+      <h1 className="font-display text-3xl font-medium">Profesionales</h1>
+      <p className="mt-2 max-w-xl text-muted-foreground">
+        Talento por categoría, ciudad y disponibilidad
       </p>
 
-      <div className="mt-8 flex flex-col gap-8 lg:flex-row">
-        <aside className="lg:w-64 shrink-0">
-          <form className="space-y-4 rounded-xl border border-border bg-card p-5">
+      <div className="mt-10 flex flex-col gap-10 lg:flex-row">
+        <aside className="shrink-0 lg:w-56">
+          <form className="space-y-4 border-t border-border pt-6">
             <div>
               <label htmlFor="q" className="mb-1.5 block text-sm font-medium">
                 Buscar
@@ -60,7 +60,7 @@ export default async function ProfessionalsPage({
                 name="q"
                 defaultValue={params.q}
                 placeholder="Nombre, especialidad..."
-                className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary"
+                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               />
             </div>
             <div>
@@ -72,7 +72,7 @@ export default async function ProfessionalsPage({
                 name="ciudad"
                 defaultValue={params.ciudad}
                 placeholder="Madrid, Barcelona..."
-                className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary"
+                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               />
             </div>
             <div>
@@ -83,7 +83,7 @@ export default async function ProfessionalsPage({
                 id="categoria"
                 name="categoria"
                 defaultValue={params.categoria ?? ""}
-                className="w-full rounded-lg border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary"
+                className="w-full rounded-md border border-border bg-secondary px-3 py-2 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
               >
                 <option value="">Todas</option>
                 {categories?.map((cat) => (
@@ -95,7 +95,7 @@ export default async function ProfessionalsPage({
             </div>
             <button
               type="submit"
-              className="w-full rounded-lg bg-primary py-2.5 text-sm font-medium text-primary-foreground"
+              className="w-full rounded-md bg-primary py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110"
             >
               Filtrar
             </button>
@@ -104,7 +104,7 @@ export default async function ProfessionalsPage({
 
         <div className="flex-1">
           {professionals && professionals.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2">
+            <ul className="divide-y divide-border">
               {professionals.map((prof: {
                 id: string;
                 display_name: string;
@@ -115,46 +115,47 @@ export default async function ProfessionalsPage({
                 avg_rating: number;
                 review_count: number;
               }) => (
-                <Link
-                  key={prof.id}
-                  href={`/profesionales/${prof.id}`}
-                  className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h2 className="font-semibold">{prof.display_name}</h2>
+                <li key={prof.id}>
+                  <Link
+                    href={`/profesionales/${prof.id}`}
+                    className="group flex flex-col gap-2 py-5 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent/40 sm:flex-row sm:items-center sm:justify-between sm:px-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <h2 className="font-medium group-hover:text-primary">
+                        {prof.display_name}
+                      </h2>
                       {prof.headline && (
                         <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                           {prof.headline}
                         </p>
                       )}
+                      <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                        {prof.location_city && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3" />
+                            {prof.location_city}
+                          </span>
+                        )}
+                        {prof.years_experience && (
+                          <span>{prof.years_experience} años exp.</span>
+                        )}
+                        {prof.hourly_rate_min && (
+                          <span>desde {prof.hourly_rate_min}€/h</span>
+                        )}
+                      </div>
                     </div>
                     {prof.avg_rating > 0 && (
-                      <div className="flex items-center gap-1 text-sm text-amber-400">
-                        <Star className="h-4 w-4 fill-current" />
+                      <div className="flex shrink-0 items-center gap-1 text-sm text-primary">
+                        <Star className="h-3.5 w-3.5 fill-current" />
                         {prof.avg_rating}
                       </div>
                     )}
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                    {prof.location_city && (
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3 w-3" />
-                        {prof.location_city}
-                      </span>
-                    )}
-                    {prof.years_experience && (
-                      <span>{prof.years_experience} años exp.</span>
-                    )}
-                    {prof.hourly_rate_min && (
-                      <span>desde {prof.hourly_rate_min}€/h</span>
-                    )}
-                  </div>
-                </Link>
+                  </Link>
+                </li>
               ))}
-            </div>
+            </ul>
           ) : (
-            <div className="rounded-xl border border-dashed border-border p-12 text-center">
+            <div className="border border-dashed border-border py-16 text-center">
               <p className="text-muted-foreground">
                 No hay profesionales que coincidan con los filtros.
               </p>

@@ -1,53 +1,44 @@
 import Link from "next/link";
-import { Film } from "lucide-react";
+
+const links = [
+  { href: "/profesionales", label: "Profesionales" },
+  { href: "/ofertas", label: "Ofertas" },
+  { href: "/servicios", label: "Servicios" },
+  { href: "/categorias", label: "Categorías" },
+  { href: "/publicar", label: "Publicar encargo" },
+  { href: "/auth/registro", label: "Registro" },
+];
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <div className="flex items-center gap-2 font-semibold">
-              <Film className="h-5 w-5 text-primary" />
-              Audiovisual Jobs
-            </div>
-            <p className="mt-3 text-sm text-muted-foreground">
-              La plataforma profesional especializada en el sector audiovisual.
-            </p>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium">Explorar</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/profesionales" className="hover:text-foreground">Profesionales</Link></li>
-              <li><Link href="/ofertas" className="hover:text-foreground">Ofertas y encargos</Link></li>
-              <li><Link href="/servicios" className="hover:text-foreground">Servicios</Link></li>
-              <li><Link href="/empresas" className="hover:text-foreground">Empresas</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium">Para profesionales</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/auth/registro?tipo=professional" className="hover:text-foreground">Crear perfil</Link></li>
-              <li><Link href="/ofertas" className="hover:text-foreground">Buscar oportunidades</Link></li>
-              <li><Link href="/dashboard" className="hover:text-foreground">Panel de control</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="text-sm font-medium">Para clientes</h3>
-            <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/auth/registro?tipo=company" className="hover:text-foreground">Registrar empresa</Link></li>
-              <li><Link href="/auth/registro?tipo=individual" className="hover:text-foreground">Soy particular</Link></li>
-              <li><Link href="/publicar" className="hover:text-foreground">Publicar encargo</Link></li>
-            </ul>
-          </div>
+    <footer className="border-t border-border">
+      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-end md:justify-between">
+        <div>
+          <p className="font-display text-xl font-medium">
+            Audiovisual<span className="text-primary">.</span>Jobs
+          </p>
+          <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            Talento, encargos y servicios del sector audiovisual en un solo lugar.
+          </p>
         </div>
 
-        <div className="mt-10 border-t border-border pt-6 text-center text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Audiovisual Jobs. Todos los derechos reservados.
-        </div>
+        <nav className="flex flex-wrap gap-x-6 gap-y-2">
+          {links.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="text-sm text-muted-foreground transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-foreground"
+            >
+              {label}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      <div className="border-t border-border py-5">
+        <p className="text-center text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Audiovisual Jobs
+        </p>
       </div>
     </footer>
   );

@@ -8,7 +8,7 @@ Guía adaptada a **Portal Audiovisual**. Este proyecto usa **Next.js** (no Vite)
 |----------|-------|
 | Repo GitHub | [crvmm/portalaudiovisual](https://github.com/crvmm/portalaudiovisual) |
 | Worker Cloudflare | `portalaudiovisual` |
-| URL web | https://portalaudiovisual.apps-852.workers.dev |
+| URL web | https://portalaudiovisual.pages.dev |
 | Cuenta Cloudflare | apps@crvmm.com |
 | Account ID | `852e6fbe0ecd3f7d68a85f820f49bf10` |
 | Stack Supabase (Mini) | `~/supabase-portalaudiovisual` |
@@ -146,7 +146,7 @@ En el **Mac de desarrollo**:
 
 1. Crea `.env.deploy` con la URL del tunnel y el `ANON_KEY`
 2. Ejecuta `./scripts/mac-mini/05-redeploy-cloudflare.sh`
-3. Abre https://portalaudiovisual.apps-852.workers.dev
+3. Abre https://portalaudiovisual.pages.dev
 4. Prueba registro en `/auth/registro`
 
 ---
@@ -183,7 +183,7 @@ El Mac Mini ya tiene:
 
 Redespliega portalaudiovisual en Cloudflare Workers (cuenta crvmm)
 con NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY.
-Confirma registro/login en https://portalaudiovisual.apps-852.workers.dev
+Confirma registro/login en https://portalaudiovisual.pages.dev
 ```
 
 ---
@@ -216,6 +216,6 @@ Confirma registro/login en https://portalaudiovisual.apps-852.workers.dev
 | Plantilla original | Este proyecto |
 |--------------------|---------------|
 | `VITE_SUPABASE_*` | `NEXT_PUBLIC_SUPABASE_*` |
-| Cloudflare Pages | Cloudflare Workers (OpenNext) |
+| Cloudflare Pages (estático) | Cloudflare Pages advanced mode (OpenNext + `_worker.js`) |
 | `wrangler pages deploy dist` | `npm run deploy` |
-| `audiovisual-jobs.pages.dev` | `portalaudiovisual.apps-852.workers.dev` |
+| `audiovisual-jobs.pages.dev` | `portalaudiovisual.pages.dev` |

@@ -197,12 +197,13 @@ Privado — Todos los derechos reservados.
 
 Ver guía completa: [docs/SETUP-MAC-MINI.md](docs/SETUP-MAC-MINI.md)
 
-### Cloudflare Workers
+### Cloudflare Pages
 
 - **Proyecto:** `portalaudiovisual`
 - **Cuenta:** Apps@crvmm.com
-- **URL:** https://portalaudiovisual.apps-852.workers.dev
+- **URL:** https://portalaudiovisual.pages.dev
 - **Deploy:** `npm run deploy`
+- **Workers (alternativo):** `npm run deploy:workers` → `portalaudiovisual.apps-852.workers.dev`
 
 Variables de entorno en `wrangler.jsonc` (actualizar cuando configures Supabase):
 

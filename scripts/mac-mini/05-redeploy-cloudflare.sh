@@ -17,7 +17,7 @@ fi
 : "${NEXT_PUBLIC_SUPABASE_URL:?Define NEXT_PUBLIC_SUPABASE_URL (URL del tunnel trycloudflare)}"
 : "${NEXT_PUBLIC_SUPABASE_ANON_KEY:?Define NEXT_PUBLIC_SUPABASE_ANON_KEY}"
 
-echo "==> Redesplegando portalaudiovisual en Cloudflare Workers"
+echo "==> Redesplegando portalaudiovisual en Cloudflare Pages"
 echo "    Supabase URL: $NEXT_PUBLIC_SUPABASE_URL"
 
 cp wrangler.jsonc wrangler.jsonc.bak
@@ -39,4 +39,4 @@ export CLOUDFLARE_ACCOUNT_ID="${CLOUDFLARE_ACCOUNT_ID:-852e6fbe0ecd3f7d68a85f820
 npm run deploy
 
 echo ""
-echo "✅ Deploy completado: https://portalaudiovisual.apps-852.workers.dev"
+echo "✅ Deploy completado: https://portalaudiovisual.pages.dev"

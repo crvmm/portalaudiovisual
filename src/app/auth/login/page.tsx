@@ -34,13 +34,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-4 py-16">
-      <h1 className="text-2xl font-bold">Iniciar sesión</h1>
+    <div className="mx-auto max-w-md px-4 py-20">
+      <h1 className="font-display text-3xl font-medium">Entrar</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Accede a tu cuenta de Audiovisual Jobs
+        Tu cuenta de Audiovisual Jobs
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+      <form onSubmit={handleSubmit} className="mt-10 space-y-5">
         <div>
           <label htmlFor="email" className="mb-1.5 block text-sm font-medium">
             Email
@@ -51,7 +51,7 @@ export default function LoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
           />
         </div>
 
@@ -65,7 +65,7 @@ export default function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+            className="w-full rounded-md border border-border bg-secondary px-4 py-2.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-ring"
           />
         </div>
 
@@ -78,7 +78,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-primary py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="w-full rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-110 disabled:opacity-50"
         >
           {loading ? "Entrando..." : "Iniciar sesión"}
         </button>

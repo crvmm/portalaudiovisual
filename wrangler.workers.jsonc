@@ -1,12 +1,17 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
   "name": "portalaudiovisual",
+  "account_id": "852e6fbe0ecd3f7d68a85f820f49bf10",
   "compatibility_date": "2026-07-11",
   "compatibility_flags": [
     "nodejs_compat",
     "global_fetch_strictly_public"
   ],
-  "pages_build_output_dir": ".open-next/pages-deploy",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
   "vars": {
     "NEXT_PUBLIC_SUPABASE_URL": "https://placeholder.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "placeholder-configure-later"
