@@ -1,6 +1,8 @@
-# Audiovisual Jobs
+# Portal Audiovisual
 
 Plataforma profesional especializada en el sector audiovisual. Conecta profesionales, empresas y particulares con porfolios, servicios, ofertas, coincidencias inteligentes, calendario de disponibilidad y mensajería interna.
+
+> **Identificadores:** app `Portal Audiovisual`, paquete npm `portal-audiovisual`, repo [crvmm/portalaudiovisual](https://github.com/crvmm/portalaudiovisual). No confundir con el repo anterior *Audiovisual Jobs*.
 
 ## Stack
 
@@ -199,6 +201,8 @@ Ver guía completa: [docs/SETUP-MAC-MINI.md](docs/SETUP-MAC-MINI.md)
 
 ### Cloudflare Pages
 
+- **App:** Portal Audiovisual
+- **Paquete npm:** `portal-audiovisual`
 - **Proyecto:** `portalaudiovisual`
 - **Cuenta:** Apps@crvmm.com
 - **URL:** https://portalaudiovisual.pages.dev

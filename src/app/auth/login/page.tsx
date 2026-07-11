@@ -37,7 +37,7 @@ export default function LoginPage() {
     <div className="mx-auto max-w-md px-4 py-20">
       <h1 className="font-display text-3xl font-medium">Entrar</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Tu cuenta de Audiovisual Jobs
+        Tu cuenta de Portal Audiovisual
       </p>
 
       <form onSubmit={handleSubmit} className="mt-10 space-y-5">

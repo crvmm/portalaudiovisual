@@ -91,10 +91,10 @@ BEGIN
       v_email,
       NEW.title,
       format(
-        '<h2>%s</h2><p>%s</p><p><a href="%s">Ver en Audiovisual Jobs</a></p>',
+        '<h2>%s</h2><p>%s</p><p><a href="%s">Ver en Portal Audiovisual</a></p>',
         NEW.title,
         NEW.body,
-        COALESCE(NEW.link_url, 'https://audiovisualjobs.com')
+        COALESCE(NEW.link_url, 'https://portalaudiovisual.pages.dev')
       ),
       format('%s\n\n%s\n\nVer: %s', NEW.title, NEW.body, COALESCE(NEW.link_url, ''))
     );

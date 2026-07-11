@@ -15,7 +15,7 @@ export function Header() {
           href="/"
           className="font-display text-lg font-medium tracking-tight text-foreground"
         >
-          Audiovisual<span className="text-primary">.</span>Jobs
+          Portal<span className="text-primary">.</span>Audiovisual
         </Link>
 
         <nav className="hidden items-center gap-0.5 md:flex">

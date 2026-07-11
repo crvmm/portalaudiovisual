@@ -75,7 +75,7 @@ export default function RegisterPage() {
     <div className="mx-auto max-w-md px-4 py-16">
       <h1 className="text-2xl font-bold">Crear cuenta</h1>
       <p className="mt-2 text-sm text-muted-foreground">
-        Únete a la plataforma audiovisual profesional
+        Únete a Portal Audiovisual
       </p>
 
       <form onSubmit={handleSubmit} className="mt-8 space-y-5">

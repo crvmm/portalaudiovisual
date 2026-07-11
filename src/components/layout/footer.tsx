@@ -15,7 +15,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-12 sm:px-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="font-display text-xl font-medium">
-            Audiovisual<span className="text-primary">.</span>Jobs
+            Portal<span className="text-primary">.</span>Audiovisual
           </p>
           <p className="mt-2 max-w-xs text-sm leading-relaxed text-muted-foreground">
             Talento, encargos y servicios del sector audiovisual en un solo lugar.
@@ -37,7 +37,7 @@ export function Footer() {
 
       <div className="border-t border-border py-5">
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Audiovisual Jobs
+          © {new Date().getFullYear()} Portal Audiovisual
         </p>
       </div>
     </footer>
