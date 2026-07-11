@@ -103,6 +103,15 @@ export default async function ServicesPage() {
       ) : (
         <div className="mt-8 rounded-xl border border-dashed border-border p-12 text-center">
           <p className="text-muted-foreground">No hay servicios publicados todavía.</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Si ofreces servicios audiovisuales, publícalos desde tu perfil profesional.
+          </p>
+          <Link
+            href="/auth/registro?tipo=professional"
+            className="mt-4 inline-block text-sm font-medium text-primary hover:underline"
+          >
+            Crear perfil profesional →
+          </Link>
         </div>
       )}
     </div>

@@ -11,6 +11,7 @@
     "supabase:stop": "supabase stop",
     "supabase:reset": "supabase db reset",
     "supabase:gen-types": "supabase gen types typescript --local > src/types/database.ts",
+    "seed:demo": "node scripts/seed-demo-data.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "build:pages": "bash scripts/prepare-pages-deploy.sh",
     "deploy": "bash scripts/prepare-pages-deploy.sh && CLOUDFLARE_ACCOUNT_ID=852e6fbe0ecd3f7d68a85f820f49bf10 wrangler pages deploy --project-name=portalaudiovisual --branch=main --commit-dirty=true",

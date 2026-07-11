@@ -34,6 +34,8 @@ export default async function ProfessionalsPage({
     p_offset: 0,
   });
 
+  const hasFilters = Boolean(params.q || params.ciudad || params.categoria);
+
   const { data: categories } = await supabase
     .from("categories")
     .select("id, name, slug, parent_id")
@@ -155,13 +157,23 @@ export default async function ProfessionalsPage({
               ))}
             </ul>
           ) : (
-            <div className="border border-dashed border-border py-16 text-center">
+            <div className="border border-dashed border-border px-6 py-16 text-center">
               <p className="text-muted-foreground">
-                No hay profesionales que coincidan con los filtros.
+                {hasFilters
+                  ? "Ningún profesional coincide con estos filtros."
+                  : "Aún no hay profesionales publicados en la plataforma."}
               </p>
               <p className="mt-2 text-sm text-muted-foreground">
-                Configura Supabase local y crea perfiles de prueba para ver resultados.
+                {hasFilters
+                  ? "Prueba con otra ciudad, categoría o término de búsqueda."
+                  : "Sé de los primeros en crear un perfil y aparecer aquí."}
               </p>
+              <Link
+                href="/auth/registro?tipo=professional"
+                className="mt-6 inline-flex items-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-105"
+              >
+                Crear perfil profesional
+              </Link>
             </div>
           )}
         </div>
