@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 
 export {
   Select,
+  MultiSelect,
   optionsFromRecord,
   optionsWithEmpty,
   type SelectOption,
