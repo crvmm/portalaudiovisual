@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Building2, Camera, User, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { formatSupabaseError } from "@/lib/supabase/errors";
 import type { ProfileType } from "@/types";
 import { useAuthModal } from "./auth-modal-context";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const PROFILE_OPTIONS: {
   type: ProfileType;
@@ -56,7 +58,7 @@ export function AuthModal() {
     });
 
     if (authError) {
-      setError(authError.message);
+      setError(formatSupabaseError(authError));
       setLoading(false);
       return;
     }
@@ -81,12 +83,38 @@ export function AuthModal() {
     });
 
     if (authError) {
-      setError(authError.message);
+      setError(formatSupabaseError(authError));
       setLoading(false);
       return;
     }
 
-    if (authData.user) {
+    if (!authData.user) {
+      setError(
+        "No se pudo crear la cuenta. Si ya estás registrada, inicia sesión. Si no, revisa tu email por si hace falta confirmarla."
+      );
+      setLoading(false);
+      return;
+    }
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
+    if (!session) {
+      setError(
+        "Cuenta creada. Revisa tu email para confirmarla y después inicia sesión."
+      );
+      setLoading(false);
+      return;
+    }
+
+    const { data: existingProfile } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("id", authData.user.id)
+      .maybeSingle();
+
+    if (!existingProfile) {
       const { error: profileError } = await supabase.from("profiles").insert({
         id: authData.user.id,
         profile_type: profileType,
@@ -95,30 +123,28 @@ export function AuthModal() {
       });
 
       if (profileError) {
-        setError(profileError.message);
+        setError(formatSupabaseError(profileError));
         setLoading(false);
         return;
       }
 
-      if (profileType === "professional") {
-        await supabase.from("professional_profiles").insert({ id: authData.user.id });
-        await supabase.from("notification_preferences").insert({
-          profile_id: authData.user.id,
-        });
-      } else if (profileType === "company") {
-        await supabase.from("company_profiles").insert({
-          id: authData.user.id,
-          company_name: displayName,
-        });
-      } else {
-        await supabase.from("individual_profiles").insert({ id: authData.user.id });
-      }
+      const subtypeError = await ensureProfileSubtype(
+        supabase,
+        authData.user.id,
+        profileType,
+        displayName
+      );
 
-      closeAuth();
-      router.push(redirectTo ?? "/dashboard");
-      router.refresh();
+      if (subtypeError) {
+        setError(formatSupabaseError(subtypeError));
+        setLoading(false);
+        return;
+      }
     }
 
+    closeAuth();
+    router.push(redirectTo ?? "/dashboard");
+    router.refresh();
     setLoading(false);
   }
 
@@ -312,4 +338,37 @@ function SubmitButton({
       {loading ? loadingLabel : label}
     </button>
   );
+}
+
+async function ensureProfileSubtype(
+  supabase: SupabaseClient,
+  userId: string,
+  profileType: ProfileType,
+  displayName: string
+) {
+  if (profileType === "professional") {
+    const { error: professionalError } = await supabase
+      .from("professional_profiles")
+      .insert({ id: userId });
+
+    if (professionalError) return professionalError;
+
+    const { error: preferencesError } = await supabase
+      .from("notification_preferences")
+      .insert({ profile_id: userId });
+
+    return preferencesError;
+  }
+
+  if (profileType === "company") {
+    const { error } = await supabase.from("company_profiles").insert({
+      id: userId,
+      company_name: displayName,
+    });
+
+    return error;
+  }
+
+  const { error } = await supabase.from("individual_profiles").insert({ id: userId });
+  return error;
 }

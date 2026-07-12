@@ -136,7 +136,7 @@ const features = [
     index: "01",
     title: "Coincidencias",
     description:
-      "Puntuación por categoría, ubicación, agenda, experiencia y presupuesto.",
+      "Match por categoría, ubicación, agenda, experiencia y presupuesto.",
   },
   {
     index: "02",
