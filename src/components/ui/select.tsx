@@ -1,10 +1,12 @@
 "use client";
 
+import { createContext, useContext } from "react";
 import ReactSelect, {
   type ClearIndicatorProps,
   type DropdownIndicatorProps,
   type GroupBase,
-  type MultiValueProps,
+  type MultiValueGenericProps,
+  type MultiValueRemoveProps,
   type Props as ReactSelectProps,
   type SingleValueProps,
   type StylesConfig,
@@ -160,6 +162,14 @@ const multiSelectStyles = baseSelectStyles as StylesConfig<
   GroupBase<SelectOption>
 >;
 
+const SelectFieldContext = createContext<{
+  onClear?: () => void;
+}>({});
+
+function useSelectFieldContext() {
+  return useContext(SelectFieldContext);
+}
+
 interface SelectProps {
   id?: string;
   name?: string;
@@ -213,34 +223,69 @@ function ClearIndicator(
   );
 }
 
-function SelectChip({
-  children,
-  onRemoveInnerProps,
+function SelectChipRemove({
+  innerProps,
 }: {
-  children: React.ReactNode;
-  onRemoveInnerProps?: React.HTMLAttributes<HTMLDivElement>;
+  innerProps: React.HTMLAttributes<HTMLDivElement>;
 }) {
   return (
-    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground">
-      <span className="truncate">{children}</span>
-      {onRemoveInnerProps && (
-        <div
-          {...onRemoveInnerProps}
-          className="shrink-0 cursor-pointer rounded p-0.5 text-primary/65 transition-colors hover:bg-primary/15 hover:text-primary"
-          aria-label="Quitar selección"
-        >
-          <X size={14} strokeWidth={2} aria-hidden />
-        </div>
+    <div
+      {...innerProps}
+      className={cn(
+        "shrink-0 cursor-pointer rounded p-0.5 text-primary/65 transition-colors hover:bg-primary/15 hover:text-primary",
+        innerProps.className
       )}
-    </span>
+      aria-label="Quitar selección"
+    >
+      <X size={14} strokeWidth={2} className="pointer-events-none" aria-hidden />
+    </div>
+  );
+}
+
+function ChipMultiValueContainer(
+  props: MultiValueGenericProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  const { children, innerProps } = props;
+
+  return (
+    <div
+      {...innerProps}
+      className={cn(
+        "m-0.5 inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground",
+        innerProps.className
+      )}
+    >
+      {children}
+    </div>
+  );
+}
+
+function ChipMultiValueLabel(
+  props: MultiValueGenericProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  return (
+    <components.MultiValueLabel {...props}>
+      <span className="truncate">{props.children}</span>
+    </components.MultiValueLabel>
+  );
+}
+
+function ChipMultiValueRemove(
+  props: MultiValueRemoveProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  return (
+    <components.MultiValueRemove {...props}>
+      <X size={14} strokeWidth={2} className="pointer-events-none" aria-hidden />
+    </components.MultiValueRemove>
   );
 }
 
 function ChipSingleValue(
   props: SingleValueProps<SelectOption, boolean, GroupBase<SelectOption>>
 ) {
-  const { children, data, selectProps } = props;
-  const showRemove = selectProps.isClearable && !selectProps.isDisabled;
+  const { children, innerProps, selectProps, isDisabled } = props;
+  const { onClear } = useSelectFieldContext();
+  const showRemove = selectProps.isClearable && !isDisabled && Boolean(onClear);
 
   const removeInnerProps = showRemove
     ? {
@@ -251,33 +296,22 @@ function ChipSingleValue(
         onClick: (event: React.MouseEvent<HTMLDivElement>) => {
           event.preventDefault();
           event.stopPropagation();
-          selectProps.onChange(null, {
-            action: "clear",
-            removedValues: [data],
-          });
+          onClear?.();
         },
         onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => {
           event.preventDefault();
           event.stopPropagation();
+          onClear?.();
         },
       }
     : undefined;
 
   return (
-    <components.SingleValue {...props}>
-      <SelectChip onRemoveInnerProps={removeInnerProps}>{children}</SelectChip>
-    </components.SingleValue>
-  );
-}
-
-function ChipMultiValue(
-  props: MultiValueProps<SelectOption, boolean, GroupBase<SelectOption>>
-) {
-  const { data, removeProps, innerProps } = props;
-
-  return (
-    <div {...innerProps} className="m-0.5">
-      <SelectChip onRemoveInnerProps={removeProps}>{data.label}</SelectChip>
+    <div {...innerProps} className={cn("max-w-full", innerProps.className)}>
+      <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground">
+        <span className="truncate">{children}</span>
+        {removeInnerProps && <SelectChipRemove innerProps={removeInnerProps} />}
+      </span>
     </div>
   );
 }
@@ -321,38 +355,40 @@ export function Select({
   };
 
   return (
-    <div className={className}>
-      {label && (
-        <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
-          {label}
-        </label>
-      )}
-      <ReactSelect<SelectOption, false>
-        inputId={id}
-        instanceId={id}
-        options={options}
-        value={selected}
-        onChange={handleChange}
-        placeholder={placeholder}
-        isClearable={isClearable}
-        isDisabled={isDisabled}
-        isLoading={isLoading}
-        required={required}
-        styles={selectStyles}
-        components={{
-          DropdownIndicator,
-          ClearIndicator: SelectClearIndicator,
-          SingleValue: ChipSingleValue,
-        }}
-        noOptionsMessage={() => noOptionsMessage}
-        classNamePrefix="pa-select"
-        classNames={{
-          control: () => cn(error && "!border-red-500"),
-        }}
-      />
-      {name && <input type="hidden" name={name} value={value} />}
-      {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
-    </div>
+    <SelectFieldContext.Provider value={{ onClear: () => onChange("") }}>
+      <div className={className}>
+        {label && (
+          <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
+            {label}
+          </label>
+        )}
+        <ReactSelect<SelectOption, false>
+          inputId={id}
+          instanceId={id}
+          options={options}
+          value={selected}
+          onChange={handleChange}
+          placeholder={placeholder}
+          isClearable={isClearable}
+          isDisabled={isDisabled}
+          isLoading={isLoading}
+          required={required}
+          styles={selectStyles}
+          components={{
+            DropdownIndicator,
+            ClearIndicator: SelectClearIndicator,
+            SingleValue: ChipSingleValue,
+          }}
+          noOptionsMessage={() => noOptionsMessage}
+          classNamePrefix="pa-select"
+          classNames={{
+            control: () => cn(error && "!border-red-500"),
+          }}
+        />
+        {name && <input type="hidden" name={name} value={value} />}
+        {error && <p className="mt-1 text-xs text-red-700">{error}</p>}
+      </div>
+    </SelectFieldContext.Provider>
   );
 }
 
@@ -400,7 +436,9 @@ export function MultiSelect({
         components={{
           DropdownIndicator,
           ClearIndicator: MultiSelectClearIndicator,
-          MultiValue: ChipMultiValue,
+          MultiValueContainer: ChipMultiValueContainer,
+          MultiValueLabel: ChipMultiValueLabel,
+          MultiValueRemove: ChipMultiValueRemove,
         }}
         noOptionsMessage={() => noOptionsMessage}
         classNamePrefix="pa-select"
