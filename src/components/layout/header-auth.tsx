@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/client";
 import { useAuthModal } from "@/components/auth/auth-modal-context";
 
 export function HeaderAuth() {
@@ -10,6 +10,8 @@ export function HeaderAuth() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
     const supabase = createClient();
 
     supabase.auth.getUser().then(({ data: { user } }) => {

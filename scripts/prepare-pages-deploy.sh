@@ -4,9 +4,23 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+if [[ -f .env.deploy ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  source .env.deploy
+  set +a
+fi
+
+: "${NEXT_PUBLIC_SUPABASE_URL:?Define NEXT_PUBLIC_SUPABASE_URL in .env.deploy (tunnel URL)}"
+: "${NEXT_PUBLIC_SUPABASE_ANON_KEY:?Define NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.deploy}"
+
+export NEXT_PUBLIC_SUPABASE_URL
+export NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 DEPLOY_DIR=".open-next/pages-deploy"
 
 echo "==> Building OpenNext bundle..."
+echo "    Supabase URL: $NEXT_PUBLIC_SUPABASE_URL"
 ./node_modules/.bin/opennextjs-cloudflare build
 
 echo "==> Preparing Pages advanced mode bundle..."
