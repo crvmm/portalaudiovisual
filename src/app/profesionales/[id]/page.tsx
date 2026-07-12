@@ -27,6 +27,7 @@ import {
   type ExperienceLevel,
 } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { formatSpanishLocation } from "@/lib/spain-territories";
 
 export default async function ProfessionalDetailPage({
   params,
@@ -134,11 +135,16 @@ export default async function ProfessionalDetailPage({
                 <p className="mt-1 text-lg text-muted-foreground">{professional.headline}</p>
               )}
               <div className="mt-3 flex flex-wrap gap-3 text-sm text-muted-foreground">
-                {professional?.location_city && (
+                {(professional?.location_city ||
+                  professional?.location_province ||
+                  professional?.location_region) && (
                   <span className="flex items-center gap-1">
                     <MapPin className="h-4 w-4" />
-                    {professional.location_city}
-                    {professional.location_region && `, ${professional.location_region}`}
+                    {formatSpanishLocation({
+                      city: professional?.location_city,
+                      province: professional?.location_province,
+                      autonomousCommunity: professional?.location_region,
+                    })}
                   </span>
                 )}
                 {professional?.years_experience && (

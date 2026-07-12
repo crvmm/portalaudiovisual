@@ -69,6 +69,7 @@ export interface ProfessionalProfile {
   cv_url: string | null;
   location_city: string | null;
   location_region: string | null;
+  location_province: string | null;
   location_country: string;
   years_experience: number | null;
   experience_level: ExperienceLevel | null;
@@ -91,6 +92,7 @@ export interface CompanyProfile {
   website_url: string | null;
   location_city: string | null;
   location_region: string | null;
+  location_province: string | null;
   team_size: string | null;
   is_audiovisual_sector: boolean;
 }
@@ -133,6 +135,7 @@ export interface JobPosting {
   work_modality: WorkModality;
   location_city: string | null;
   location_region: string | null;
+  location_province: string | null;
   project_start_date: string | null;
   project_end_date: string | null;
   experience_required: ExperienceLevel | null;

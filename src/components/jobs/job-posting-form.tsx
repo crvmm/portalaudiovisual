@@ -8,6 +8,8 @@ import { Input, Textarea, Select, optionsFromRecord, optionsWithEmpty } from "@/
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import { LocationFields } from "@/components/ui/location-fields";
+import { formatSpanishLocation } from "@/lib/spain-territories";
 import {
   JOB_POSTING_TYPE_LABELS,
   WORK_MODALITY_LABELS,
@@ -30,6 +32,7 @@ interface FormData {
   work_modality: WorkModality;
   location_city: string;
   location_region: string;
+  location_province: string;
   project_start_date: string;
   project_end_date: string;
   schedule: string;
@@ -54,6 +57,7 @@ const initialData: FormData = {
   work_modality: "on_site",
   location_city: "",
   location_region: "",
+  location_province: "",
   project_start_date: "",
   project_end_date: "",
   schedule: "",
@@ -138,6 +142,7 @@ export function JobPostingForm() {
         work_modality: data.work_modality,
         location_city: data.location_city || null,
         location_region: data.location_region || null,
+        location_province: data.location_province || null,
         project_start_date: data.project_start_date || null,
         project_end_date: data.project_end_date || null,
         schedule: data.schedule || null,
@@ -259,20 +264,21 @@ export function JobPostingForm() {
             <CardTitle>Detalles del proyecto</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <Input
-                id="location_city"
-                label="Ciudad"
-                value={data.location_city}
-                onChange={(e) => update("location_city", e.target.value)}
-              />
-              <Input
-                id="location_region"
-                label="Provincia / Región"
-                value={data.location_region}
-                onChange={(e) => update("location_region", e.target.value)}
-              />
-            </div>
+            <LocationFields
+              values={{
+                city: data.location_city,
+                autonomousCommunity: data.location_region,
+                province: data.location_province,
+              }}
+              onChange={({ city, autonomousCommunity, province }) =>
+                setData((prev) => ({
+                  ...prev,
+                  location_city: city,
+                  location_region: autonomousCommunity,
+                  location_province: province,
+                }))
+              }
+            />
             <div className="grid gap-4 sm:grid-cols-2">
               <Input
                 id="project_start_date"
@@ -437,10 +443,16 @@ export function JobPostingForm() {
               <p className="text-muted-foreground">Descripción</p>
               <p className="whitespace-pre-wrap">{data.description}</p>
             </div>
-            {data.location_city && (
+            {(data.location_city || data.location_province || data.location_region) && (
               <div>
                 <p className="text-muted-foreground">Ubicación</p>
-                <p>{data.location_city}{data.location_region && `, ${data.location_region}`}</p>
+                <p>
+                  {formatSpanishLocation({
+                    city: data.location_city,
+                    province: data.location_province,
+                    autonomousCommunity: data.location_region,
+                  })}
+                </p>
               </div>
             )}
             {data.category_ids.length > 0 && (

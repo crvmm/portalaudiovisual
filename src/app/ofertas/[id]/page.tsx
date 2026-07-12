@@ -28,6 +28,7 @@ import {
   type ExperienceLevel,
 } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatSpanishLocation } from "@/lib/spain-territories";
 
 export default async function JobDetailPage({
   params,
@@ -253,14 +254,17 @@ export default async function JobDetailPage({
         <div className="space-y-6">
           <Card>
             <CardContent className="space-y-4 pt-6 text-sm">
-              {posting.location_city && (
+              {(posting.location_city || posting.location_province || posting.location_region) && (
                 <div className="flex items-start gap-3">
                   <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
                   <div>
                     <p className="font-medium">Ubicación</p>
                     <p className="text-muted-foreground">
-                      {posting.location_city}
-                      {posting.location_region && `, ${posting.location_region}`}
+                      {formatSpanishLocation({
+                        city: posting.location_city,
+                        province: posting.location_province,
+                        autonomousCommunity: posting.location_region,
+                      })}
                     </p>
                   </div>
                 </div>

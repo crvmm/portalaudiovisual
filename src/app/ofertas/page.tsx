@@ -10,6 +10,7 @@ import {
 } from "@/lib/job-postings-filters";
 import { JOB_POSTING_TYPE_LABELS, WORK_MODALITY_LABELS } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatSpanishLocation } from "@/lib/spain-territories";
 import type { JobPostingType, WorkModality } from "@/types";
 
 export default async function JobPostingsPage({
@@ -51,8 +52,14 @@ export default async function JobPostingsPage({
     query = query.ilike("location_city", `%${params.ciudad.trim()}%`);
   }
 
-  if (params.region?.trim()) {
+  if (params.comunidad?.trim()) {
+    query = query.eq("location_region", params.comunidad.trim());
+  } else if (params.region?.trim()) {
     query = query.ilike("location_region", `%${params.region.trim()}%`);
+  }
+
+  if (params.provincia?.trim()) {
+    query = query.eq("location_province", params.provincia.trim());
   }
 
   if (params.q?.trim()) {
@@ -84,7 +91,8 @@ export default async function JobPostingsPage({
           <JobPostingsFilterForm
             initialQuery={params.q}
             initialCity={params.ciudad}
-            initialRegion={params.region}
+            initialCommunity={params.comunidad ?? params.region}
+            initialProvince={params.provincia}
             initialPostingTypes={postingTypes}
             initialContractTypes={contractTypes}
             initialModalities={modalities}
@@ -129,11 +137,14 @@ export default async function JobPostingsPage({
                     )}
                   </div>
                   <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
-                    {posting.location_city && (
+                    {(posting.location_city || posting.location_province || posting.location_region) && (
                       <span className="flex items-center gap-1">
                         <MapPin className="h-3 w-3" />
-                        {posting.location_city}
-                        {posting.location_region && `, ${posting.location_region}`}
+                        {formatSpanishLocation({
+                          city: posting.location_city,
+                          province: posting.location_province,
+                          autonomousCommunity: posting.location_region,
+                        })}
                       </span>
                     )}
                     {posting.project_start_date && (

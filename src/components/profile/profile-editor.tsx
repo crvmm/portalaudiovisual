@@ -10,6 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar } from "@/components/ui/avatar";
 import { Plus, Trash2, Save, Upload } from "lucide-react";
+import { LocationFields } from "@/components/ui/location-fields";
+import { normalizeAutonomousCommunity } from "@/lib/spain-territories";
 import {
   WORK_MODALITY_LABELS,
   JOB_SEEKING_LABELS,
@@ -27,6 +29,7 @@ interface ProfileData {
   bio: string;
   location_city: string;
   location_region: string;
+  location_province: string;
   years_experience: string;
   experience_level: ExperienceLevel | "";
   hourly_rate_min: string;
@@ -58,6 +61,7 @@ export function ProfileEditor() {
     bio: "",
     location_city: "",
     location_region: "",
+    location_province: "",
     years_experience: "",
     experience_level: "",
     hourly_rate_min: "",
@@ -121,7 +125,11 @@ export function ProfileEditor() {
         headline: professional.headline ?? "",
         bio: professional.bio ?? "",
         location_city: professional.location_city ?? "",
-        location_region: professional.location_region ?? "",
+        location_region:
+          normalizeAutonomousCommunity(professional.location_region) ||
+          professional.location_region ||
+          "",
+        location_province: professional.location_province ?? "",
         years_experience: professional.years_experience?.toString() ?? "",
         experience_level: professional.experience_level ?? "",
         hourly_rate_min: professional.hourly_rate_min?.toString() ?? "",
@@ -217,6 +225,7 @@ export function ProfileEditor() {
       bio: data.bio || null,
       location_city: data.location_city || null,
       location_region: data.location_region || null,
+      location_province: data.location_province || null,
       years_experience: data.years_experience ? parseInt(data.years_experience) : null,
       experience_level: data.experience_level || null,
       hourly_rate_min: data.hourly_rate_min ? parseFloat(data.hourly_rate_min) : null,
@@ -333,20 +342,21 @@ export function ProfileEditor() {
             onChange={(e) => update("bio", e.target.value)}
             rows={5}
           />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Input
-              id="location_city"
-              label="Ciudad"
-              value={data.location_city}
-              onChange={(e) => update("location_city", e.target.value)}
-            />
-            <Input
-              id="location_region"
-              label="Provincia"
-              value={data.location_region}
-              onChange={(e) => update("location_region", e.target.value)}
-            />
-          </div>
+          <LocationFields
+            values={{
+              city: data.location_city,
+              autonomousCommunity: data.location_region,
+              province: data.location_province,
+            }}
+            onChange={({ city, autonomousCommunity, province }) =>
+              setData((prev) => ({
+                ...prev,
+                location_city: city,
+                location_region: autonomousCommunity,
+                location_province: province,
+              }))
+            }
+          />
           <Input
             id="website_url"
             label="Página web"

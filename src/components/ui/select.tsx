@@ -1,10 +1,12 @@
 "use client";
 
 import ReactSelect, {
-  type DropdownIndicatorProps,
   type ClearIndicatorProps,
+  type DropdownIndicatorProps,
   type GroupBase,
+  type MultiValueProps,
   type Props as ReactSelectProps,
+  type SingleValueProps,
   type StylesConfig,
   components,
 } from "react-select";
@@ -45,10 +47,16 @@ const baseSelectStyles: BaseSelectStyles = {
   }),
   valueContainer: (base) => ({
     ...base,
-    padding: "0 0 0 1rem",
+    padding: "0.3125rem 0.5rem",
+    gap: "0.25rem",
+    flexWrap: "wrap",
   }),
   singleValue: (base) => ({
     ...base,
+    position: "static",
+    transform: "none",
+    maxWidth: "calc(100% - 0.5rem)",
+    margin: 0,
     color: "var(--foreground)",
     fontSize: "0.875rem",
   }),
@@ -125,21 +133,18 @@ const baseSelectStyles: BaseSelectStyles = {
   }),
   multiValue: (base) => ({
     ...base,
-    backgroundColor: "var(--accent)",
-    borderRadius: "0.25rem",
+    backgroundColor: "transparent",
+    margin: 0,
+    padding: 0,
   }),
   multiValueLabel: (base) => ({
     ...base,
-    fontSize: "0.8125rem",
+    padding: 0,
+    fontSize: "0.875rem",
     color: "var(--foreground)",
   }),
-  multiValueRemove: (base) => ({
-    ...base,
-    color: "var(--muted-foreground)",
-    "&:hover": {
-      backgroundColor: "var(--muted)",
-      color: "var(--foreground)",
-    },
+  multiValueRemove: () => ({
+    display: "none",
   }),
 };
 
@@ -208,6 +213,91 @@ function ClearIndicator(
   );
 }
 
+function SelectChip({
+  children,
+  onRemoveInnerProps,
+}: {
+  children: React.ReactNode;
+  onRemoveInnerProps?: React.HTMLAttributes<HTMLDivElement>;
+}) {
+  return (
+    <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground">
+      <span className="truncate">{children}</span>
+      {onRemoveInnerProps && (
+        <div
+          {...onRemoveInnerProps}
+          className="shrink-0 cursor-pointer rounded p-0.5 text-primary/65 transition-colors hover:bg-primary/15 hover:text-primary"
+          aria-label="Quitar selección"
+        >
+          <X size={14} strokeWidth={2} aria-hidden />
+        </div>
+      )}
+    </span>
+  );
+}
+
+function ChipSingleValue(
+  props: SingleValueProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  const { children, data, selectProps } = props;
+  const showRemove = selectProps.isClearable && !selectProps.isDisabled;
+
+  const removeInnerProps = showRemove
+    ? {
+        onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          event.stopPropagation();
+        },
+        onClick: (event: React.MouseEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          event.stopPropagation();
+          selectProps.onChange(null, {
+            action: "clear",
+            removedValues: [data],
+          });
+        },
+        onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          event.stopPropagation();
+        },
+      }
+    : undefined;
+
+  return (
+    <components.SingleValue {...props}>
+      <SelectChip onRemoveInnerProps={removeInnerProps}>{children}</SelectChip>
+    </components.SingleValue>
+  );
+}
+
+function ChipMultiValue(
+  props: MultiValueProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  const { data, removeProps, innerProps } = props;
+
+  return (
+    <div {...innerProps} className="m-0.5">
+      <SelectChip onRemoveInnerProps={removeProps}>{data.label}</SelectChip>
+    </div>
+  );
+}
+
+function SelectClearIndicator(
+  props: ClearIndicatorProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  if (props.selectProps.value && props.selectProps.isClearable) {
+    return null;
+  }
+
+  return <ClearIndicator {...props} />;
+}
+
+function MultiSelectClearIndicator(
+  props: ClearIndicatorProps<SelectOption, boolean, GroupBase<SelectOption>>
+) {
+  return <ClearIndicator {...props} />;
+}
+
 export function Select({
   id,
   name,
@@ -249,7 +339,11 @@ export function Select({
         isLoading={isLoading}
         required={required}
         styles={selectStyles}
-        components={{ DropdownIndicator, ClearIndicator }}
+        components={{
+          DropdownIndicator,
+          ClearIndicator: SelectClearIndicator,
+          SingleValue: ChipSingleValue,
+        }}
         noOptionsMessage={() => noOptionsMessage}
         classNamePrefix="pa-select"
         classNames={{
@@ -303,7 +397,11 @@ export function MultiSelect({
         isDisabled={isDisabled}
         isLoading={isLoading}
         styles={multiSelectStyles}
-        components={{ DropdownIndicator, ClearIndicator }}
+        components={{
+          DropdownIndicator,
+          ClearIndicator: MultiSelectClearIndicator,
+          MultiValue: ChipMultiValue,
+        }}
         noOptionsMessage={() => noOptionsMessage}
         classNamePrefix="pa-select"
         classNames={{

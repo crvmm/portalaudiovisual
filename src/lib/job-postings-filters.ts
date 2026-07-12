@@ -1,6 +1,9 @@
 export interface JobPostingsSearchParams {
   q?: string;
   ciudad?: string;
+  comunidad?: string;
+  provincia?: string;
+  /** @deprecated Usar `comunidad` */
   region?: string;
   tipos?: string;
   contratos?: string;
@@ -16,6 +19,8 @@ export function hasJobPostingFilters(params: JobPostingsSearchParams): boolean {
   return Boolean(
     params.q ||
       params.ciudad ||
+      params.comunidad ||
+      params.provincia ||
       params.region ||
       params.tipos ||
       params.contratos ||
