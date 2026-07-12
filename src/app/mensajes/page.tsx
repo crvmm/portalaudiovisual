@@ -7,6 +7,7 @@ import { getOrCreateConversation } from "@/hooks/use-messages";
 import { ChatThread } from "@/components/chat/chat-thread";
 import { Avatar } from "@/components/ui/avatar";
 import { formatRelativeTime } from "@/lib/utils";
+import { authModalLoginUrl, isAuthModalOpen } from "@/lib/auth/redirect";
 import { MessageSquare } from "lucide-react";
 
 interface ConversationItem {
@@ -35,6 +36,7 @@ function MessagesContent() {
     { id: string; display_name: string; avatar_url: string | null }[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [needsAuth, setNeedsAuth] = useState(false);
 
   const loadConversations = useCallback(async (uid: string) => {
     const supabase = createClient();
@@ -104,7 +106,13 @@ function MessagesContent() {
     async function init() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        router.push("/auth/login?redirect=/mensajes");
+        if (isAuthModalOpen(searchParams)) {
+          setNeedsAuth(true);
+          setLoading(false);
+          return;
+        }
+
+        router.replace(authModalLoginUrl("/mensajes"));
         return;
       }
       setUserId(user.id);
@@ -154,6 +162,17 @@ function MessagesContent() {
 
   if (loading) {
     return <p className="py-16 text-center text-muted-foreground">Cargando...</p>;
+  }
+
+  if (needsAuth) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 text-center">
+        <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/50" />
+        <p className="mt-4 text-muted-foreground">
+          Inicia sesión para ver tus mensajes
+        </p>
+      </div>
+    );
   }
 
   return (

@@ -11,6 +11,7 @@ import { Input, Select } from "@/components/ui/input";
 import { Bell, Check, Settings, Sparkles } from "lucide-react";
 import type { Notification, Category } from "@/types";
 import { formatRelativeTime } from "@/lib/utils";
+import { authModalLoginUrl, isAuthModalOpen } from "@/lib/auth/redirect";
 
 export function NotificationsPanel() {
   const router = useRouter();
@@ -91,7 +92,9 @@ export function NotificationsPanel() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
-        router.push("/auth/login?redirect=/dashboard/notificaciones");
+        if (!isAuthModalOpen(new URLSearchParams(window.location.search))) {
+          router.replace(authModalLoginUrl("/dashboard/notificaciones"));
+        }
         return;
       }
       setUserId(user.id);

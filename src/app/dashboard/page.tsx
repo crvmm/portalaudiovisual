@@ -1,5 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import {
   User,
@@ -10,13 +10,23 @@ import {
   Bell,
   Plus,
 } from "lucide-react";
+import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
+import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/auth/login");
+    if (!isAuthModalOpenFromParams(params)) {
+      redirect(authModalLoginUrl("/dashboard"));
+    }
+    return <AuthRequiredPlaceholder message="Inicia sesión para acceder a tu panel" />;
   }
 
   const { data: profile } = await supabase

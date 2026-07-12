@@ -1,12 +1,24 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileEditor } from "@/components/profile/profile-editor";
+import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
+import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 
-export default async function ProfileEditPage() {
+export default async function ProfileEditPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/login?redirect=/dashboard/perfil");
+  if (!user) {
+    if (!isAuthModalOpenFromParams(params)) {
+      redirect(authModalLoginUrl("/dashboard/perfil"));
+    }
+    return <AuthRequiredPlaceholder message="Inicia sesión para editar tu perfil" />;
+  }
 
   const { data: profile } = await supabase
     .from("profiles")

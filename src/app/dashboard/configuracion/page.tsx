@@ -1,14 +1,26 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AccountSettings } from "@/components/settings/account-settings";
+import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
+import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 
-export default async function DashboardSettingsPage() {
+export default async function DashboardSettingsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
+  const params = await searchParams;
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/login?redirect=/dashboard/configuracion");
+  if (!user) {
+    if (!isAuthModalOpenFromParams(params)) {
+      redirect(authModalLoginUrl("/dashboard/configuracion"));
+    }
+    return <AuthRequiredPlaceholder message="Inicia sesión para ver la configuración" />;
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">

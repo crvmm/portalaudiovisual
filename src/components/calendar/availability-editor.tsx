@@ -1,14 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { authModalLoginUrl, isAuthModalOpen } from "@/lib/auth/redirect";
 import { AvailabilityCalendar } from "@/components/calendar/availability-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { AvailabilitySlot, AvailabilityStatus } from "@/types";
 
 export function AvailabilityEditor() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [slots, setSlots] = useState<AvailabilitySlot[]>([]);
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,13 +38,17 @@ export function AvailabilityEditor() {
     const supabase = createClient();
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (!user) {
-        router.push("/auth/login?redirect=/dashboard/calendario");
+        if (isAuthModalOpen(searchParams)) {
+          setLoading(false);
+          return;
+        }
+        router.replace(authModalLoginUrl("/dashboard/calendario"));
         return;
       }
       setUserId(user.id);
       loadSlots(user.id);
     });
-  }, [router, loadSlots]);
+  }, [router, searchParams, loadSlots]);
 
   async function handleSlotChange(date: string, status: AvailabilityStatus) {
     if (!userId) return;

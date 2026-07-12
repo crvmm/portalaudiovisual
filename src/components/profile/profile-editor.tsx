@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { authModalLoginUrl, isAuthModalOpen } from "@/lib/auth/redirect";
 import { Button } from "@/components/ui/button";
 import { Input, Textarea, Select, optionsWithEmpty } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +42,7 @@ interface ProfileData {
 
 export function ProfileEditor() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,11 @@ export function ProfileEditor() {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
-      router.push("/auth/login?redirect=/dashboard/perfil");
+      if (isAuthModalOpen(searchParams)) {
+        setLoading(false);
+        return;
+      }
+      router.replace(authModalLoginUrl("/dashboard/perfil"));
       return;
     }
     setUserId(user.id);
@@ -133,7 +139,7 @@ export function ProfileEditor() {
     setCategories(cats ?? []);
     setPortfolio(portfolioItems ?? []);
     setLoading(false);
-  }, [router]);
+  }, [router, searchParams]);
 
   useEffect(() => {
     loadProfile();

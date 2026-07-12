@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { formatSupabaseError } from "@/lib/supabase/errors";
+import { authModalLoginUrl } from "@/lib/auth/redirect";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -34,7 +35,7 @@ export function AccountSettings() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        router.push("/auth/login?redirect=/dashboard/configuracion");
+        router.replace(authModalLoginUrl("/dashboard/configuracion"));
         return;
       }
 

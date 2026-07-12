@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ApplicationStatusActions } from "@/components/applications/application-status-actions";
+import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
+import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 import { MessageSquare, ExternalLink } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { ApplicationStatus } from "@/types";
@@ -22,14 +24,22 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
 
 export default async function DashboardJobDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { id } = await params;
+  const query = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) redirect("/auth/login");
+  if (!user) {
+    if (!isAuthModalOpenFromParams(query)) {
+      redirect(authModalLoginUrl(`/dashboard/ofertas/${id}`));
+    }
+    return <AuthRequiredPlaceholder message="Inicia sesión para ver esta oferta" />;
+  }
 
   const { data: posting } = await supabase
     .from("job_postings")

@@ -16,6 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { MatchScoreCard } from "@/components/matching/match-score-card";
 import { ApplicationForm } from "@/components/applications/application-form";
+import { authModalLoginUrl } from "@/lib/auth/redirect";
 import {
   JOB_POSTING_TYPE_LABELS,
   WORK_MODALITY_LABELS,
@@ -383,7 +384,7 @@ export default async function JobDetailPage({
                 <p className="text-sm text-muted-foreground mb-4">
                   Inicia sesión para presentar tu candidatura
                 </p>
-                <Link href={`/auth/login?redirect=/ofertas/${id}`}>
+                <Link href={authModalLoginUrl(`/ofertas/${id}`)}>
                   <Button className="w-full">Iniciar sesión</Button>
                 </Link>
               </CardContent>
