@@ -29,7 +29,7 @@ export default async function DashboardPage() {
   { href: "/dashboard/perfil", label: "Mi perfil", icon: User, description: "Edita tu información profesional" },
   { href: "/dashboard/ofertas", label: "Mis ofertas", icon: Briefcase, description: "Gestiona publicaciones y candidaturas" },
   { href: "/dashboard/calendario", label: "Calendario", icon: Calendar, description: "Disponibilidad y reservas" },
-  { href: "/dashboard/mensajes", label: "Mensajes", icon: MessageSquare, description: "Conversaciones activas" },
+  { href: "/mensajes", label: "Mensajes", icon: MessageSquare, description: "Conversaciones activas" },
   { href: "/dashboard/notificaciones", label: "Notificaciones", icon: Bell, description: "Preferencias y alertas" },
   { href: "/dashboard/configuracion", label: "Configuración", icon: Settings, description: "Ajustes de cuenta" },
 ];
