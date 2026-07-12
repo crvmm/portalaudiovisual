@@ -386,7 +386,7 @@ export function JobPostingForm() {
                     className="focus:outline-none"
                   >
                     <Badge
-                      variant={data.category_ids.includes(cat.id) ? "primary" : "muted"}
+                      variant={data.category_ids.includes(cat.id) ? "signal" : "muted"}
                       className="cursor-pointer"
                     >
                       {cat.name}
@@ -449,7 +449,7 @@ export function JobPostingForm() {
                 <div className="flex flex-wrap gap-1">
                   {data.category_ids.map((id) => {
                     const cat = categories.find((c) => c.id === id);
-                    return cat ? <Badge key={id} variant="primary">{cat.name}</Badge> : null;
+                    return cat ? <Badge key={id} variant="signal">{cat.name}</Badge> : null;
                   })}
                 </div>
               </div>

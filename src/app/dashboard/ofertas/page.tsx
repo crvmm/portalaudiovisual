@@ -49,7 +49,7 @@ export default async function DashboardJobsPage() {
                   <CardContent className="flex items-center justify-between p-5">
                     <div>
                       <div className="flex items-center gap-2">
-                        <Badge variant="primary">
+                        <Badge variant="signal">
                           {JOB_POSTING_TYPE_LABELS[posting.posting_type as JobPostingType]}
                         </Badge>
                         <Badge

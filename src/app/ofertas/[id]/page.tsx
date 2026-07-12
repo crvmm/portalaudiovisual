@@ -117,7 +117,7 @@ export default async function JobDetailPage({
         <div className="lg:col-span-2 space-y-6">
           <div>
             <div className="flex flex-wrap gap-2">
-              <Badge variant="primary">
+              <Badge variant="signal">
                 {JOB_POSTING_TYPE_LABELS[posting.posting_type as JobPostingType]}
               </Badge>
               <Badge variant="muted">

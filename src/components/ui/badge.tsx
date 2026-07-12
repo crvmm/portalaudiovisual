@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "default" | "primary" | "success" | "warning" | "muted" | "danger";
+  variant?: "default" | "primary" | "signal" | "success" | "warning" | "muted" | "danger";
   className?: string;
 }
 
 const variants = {
   default: "bg-secondary text-foreground",
   primary: "bg-primary/10 text-primary",
+  signal: "bg-signal/10 text-signal",
   success: "bg-green-600/10 text-green-700",
   warning: "bg-amber-600/10 text-amber-800",
   muted: "bg-muted text-muted-foreground",

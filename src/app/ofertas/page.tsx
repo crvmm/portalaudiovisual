@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { MapPin, Calendar, Briefcase } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { JOB_POSTING_TYPE_LABELS, WORK_MODALITY_LABELS } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { JobPostingType, WorkModality } from "@/types";
@@ -41,14 +42,14 @@ export default async function JobPostingsPage() {
             <Link
               key={posting.id}
               href={`/ofertas/${posting.id}`}
-              className="block rounded-xl border border-border bg-card p-6 transition-colors hover:border-primary/50"
+              className="block rounded-xl border border-border bg-card p-6 transition-colors hover:border-signal/35"
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+                    <Badge variant="signal">
                       {JOB_POSTING_TYPE_LABELS[posting.posting_type as JobPostingType]}
-                    </span>
+                    </Badge>
                     <span className="rounded-full bg-secondary px-2.5 py-0.5 text-xs text-muted-foreground">
                       {WORK_MODALITY_LABELS[posting.work_modality as WorkModality]}
                     </span>
