@@ -20,52 +20,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const heroTools: {
-  Icon: LucideIcon;
-  label: string;
-  delay: string;
-  placement?: string;
-}[] = [
-  { Icon: Camera, label: "Foto", delay: "0s" },
-  { Icon: Video, label: "Vídeo", delay: "0.4s" },
-  { Icon: Mic, label: "Sonido", delay: "0.8s" },
-  { Icon: Clapperboard, label: "Producción", delay: "1.2s" },
-  { Icon: Scissors, label: "Edición", delay: "1.6s" },
-  { Icon: MonitorPlay, label: "Motion", delay: "2s" },
-  { Icon: Headphones, label: "Post", delay: "2.4s", placement: "col-start-1 row-start-3" },
-  { Icon: Aperture, label: "Color", delay: "2.8s", placement: "col-start-3 row-start-3" },
-];
-
-function HeroToolsVisual() {
-  return (
-    <div
-      className="viewfinder-frame studio-grid relative mx-auto aspect-[4/5] w-full max-w-sm min-h-[22rem] rounded-sm border border-border bg-surface/80 sm:min-h-[26rem] sm:max-w-md lg:mx-0 lg:max-w-lg lg:min-h-[28rem]"
-      aria-hidden="true"
-    >
-      <div className="absolute inset-10 grid grid-cols-3 grid-rows-3 items-center justify-items-center gap-x-5 gap-y-7 sm:inset-12 sm:gap-x-8 sm:gap-y-9 lg:inset-14 lg:gap-x-10 lg:gap-y-10">
-        {heroTools.map(({ Icon, label, delay, placement }) => (
-          <div
-            key={label}
-            className={placement}
-          >
-            <div
-              className="hero-icon-float flex flex-col items-center gap-2.5"
-              style={{ animationDelay: delay }}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.52_0.19_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.52_0.19_285/0.16)] sm:h-14 sm:w-14">
-                <Icon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.5} />
-              </div>
-              <span className="whitespace-nowrap font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:text-[0.6875rem]">
-                {label}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const specialtyTags: { name: string; slug: string; Icon: LucideIcon }[] = [
   { name: "Fotografía", slug: "fotografia", Icon: Camera },
   { name: "Vídeo", slug: "video", Icon: Video },
@@ -82,6 +36,67 @@ const specialtyTags: { name: string; slug: string; Icon: LucideIcon }[] = [
   { name: "Diseño gráfico", slug: "diseno-grafico", Icon: Palette },
   { name: "VFX", slug: "efectos-visuales", Icon: Zap },
 ];
+
+function SpecialtyTagsPanel({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={
+        compact
+          ? "viewfinder-frame relative rounded-sm border border-border bg-surface/60 p-6 sm:p-8"
+          : "rounded-sm border border-border bg-card p-6 sm:p-8"
+      }
+    >
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+            Disciplinas
+          </p>
+          <h2
+            className={
+              compact
+                ? "mt-2 font-display text-2xl font-medium tracking-tight sm:text-3xl"
+                : "mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl"
+            }
+          >
+            Especialidades
+          </h2>
+          <p
+            className={
+              compact
+                ? "mt-2 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base"
+                : "mt-3 max-w-lg text-base text-muted-foreground sm:text-lg"
+            }
+          >
+            Etiquetas por disciplina: explora por lo que haces, no por cargos genéricos.
+          </p>
+        </div>
+        <Link
+          href="/categorias"
+          className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-foreground sm:text-base"
+        >
+          Ver todas
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+
+      <div className="mt-6 flex flex-wrap gap-2 sm:mt-8">
+        {specialtyTags.map(({ name, slug, Icon }) => (
+          <Link
+            key={slug}
+            href={`/profesionales?categoria=${slug}`}
+            className="tag-chip group inline-flex items-center gap-2 px-3.5 py-2 text-[0.9375rem]"
+          >
+            <Icon
+              className="h-3.5 w-3.5 shrink-0 text-stage transition-colors group-hover:text-primary"
+              strokeWidth={1.75}
+            />
+            <span>{name}</span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const profileTypes: {
   index: string;
@@ -147,7 +162,7 @@ export function HeroSection() {
   return (
     <section className="hero-spotlight relative overflow-hidden border-b border-border">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:py-28">
-        <div className="relative z-10">
+        <div className="relative z-10 lg:max-w-xl">
           <p className="mb-6 inline-flex items-center gap-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
             <span className="rec-dot rec-dot-pulse" aria-hidden="true" />
             Plataforma sector audiovisual
@@ -177,7 +192,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <HeroToolsVisual />
+        <SpecialtyTagsPanel compact />
       </div>
     </section>
   );
@@ -187,42 +202,7 @@ export function CategoriesSection() {
   return (
     <section className="py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
-              Disciplinas
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-medium tracking-tight sm:text-4xl">
-              Especialidades
-            </h2>
-            <p className="mt-3 max-w-lg text-base text-muted-foreground sm:text-lg">
-              Etiquetas por disciplina: explora por lo que haces, no por cargos genéricos.
-            </p>
-          </div>
-          <Link
-            href="/categorias"
-            className="inline-flex items-center gap-1.5 text-base font-medium text-primary transition-colors hover:text-foreground"
-          >
-            Ver todas
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-
-        <div className="mt-10 flex flex-wrap gap-2">
-          {specialtyTags.map(({ name, slug, Icon }) => (
-            <Link
-              key={slug}
-              href={`/profesionales?categoria=${slug}`}
-              className="tag-chip group inline-flex items-center gap-2 px-3.5 py-2 text-[0.9375rem]"
-            >
-              <Icon
-                className="h-3.5 w-3.5 shrink-0 text-stage transition-colors group-hover:text-primary"
-                strokeWidth={1.75}
-              />
-              <span>{name}</span>
-            </Link>
-          ))}
-        </div>
+        <SpecialtyTagsPanel />
       </div>
     </section>
   );
