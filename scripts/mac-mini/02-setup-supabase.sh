@@ -36,6 +36,18 @@ if [[ ! -f .env ]]; then
   fi
 fi
 
+# Sin dominio/SMTP: los registros se confirman solos (desarrollo / demo).
+if grep -q '^ENABLE_EMAIL_AUTOCONFIRM=' .env; then
+  if [[ "$(uname)" == "Darwin" ]]; then
+    sed -i '' 's/^ENABLE_EMAIL_AUTOCONFIRM=.*/ENABLE_EMAIL_AUTOCONFIRM=true/' .env
+  else
+    sed -i 's/^ENABLE_EMAIL_AUTOCONFIRM=.*/ENABLE_EMAIL_AUTOCONFIRM=true/' .env
+  fi
+else
+  echo 'ENABLE_EMAIL_AUTOCONFIRM=true' >> .env
+fi
+echo "✓ ENABLE_EMAIL_AUTOCONFIRM=true (registro sin email de confirmación)"
+
 echo "Arrancando contenedores..."
 docker compose pull
 docker compose up -d

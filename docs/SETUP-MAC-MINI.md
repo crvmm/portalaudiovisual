@@ -116,7 +116,17 @@ grep "^ANON_KEY=" ~/supabase-portalaudiovisual/docker/.env
 ./scripts/mac-mini/03-apply-migrations.sh
 ```
 
-Aplica las 13 migraciones en `supabase/migrations/` + `seed.sql` (categorías, idiomas, herramientas).
+Aplica las migraciones en `supabase/migrations/` + `seed.sql` (categorías, idiomas, herramientas).
+
+### B4b. Registro sin dominio (autoconfirm)
+
+Sin SMTP ni dominio propio, activa confirmación automática de emails:
+
+```bash
+./scripts/mac-mini/07-fix-auth-autoconfirm.sh
+```
+
+(O ya viene activado si usaste `02-setup-supabase.sh` reciente.) Los usuarios se registran y entran sin email de verificación.
 
 ### B5. Tunnel Cloudflare
 
