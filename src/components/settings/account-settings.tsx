@@ -197,6 +197,20 @@ export function AccountSettings() {
                   </Button>
                 </Link>
               )}
+              {profileType === "company" && (
+                <Link href="/dashboard/perfil">
+                  <Button type="button" variant="outline">
+                    Editar perfil de empresa
+                  </Button>
+                </Link>
+              )}
+              {profileType === "individual" && (
+                <Link href="/dashboard/perfil">
+                  <Button type="button" variant="outline">
+                    Editar mi perfil
+                  </Button>
+                </Link>
+              )}
             </div>
           </form>
         </CardContent>

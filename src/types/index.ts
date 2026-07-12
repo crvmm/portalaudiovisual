@@ -189,6 +189,14 @@ export const PROFILE_TYPE_LABELS: Record<ProfileType, string> = {
   individual: "Particular",
 };
 
+export const TEAM_SIZE_LABELS: Record<string, string> = {
+  "1-5": "1–5 personas",
+  "6-20": "6–20 personas",
+  "21-50": "21–50 personas",
+  "51-200": "51–200 personas",
+  "200+": "Más de 200",
+};
+
 export const WORK_MODALITY_LABELS: Record<WorkModality, string> = {
   on_site: "Presencial",
   remote: "Remoto",

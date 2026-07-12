@@ -12,6 +12,58 @@ import {
 } from "lucide-react";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
 import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
+import type { ProfileType } from "@/types";
+
+const DASHBOARD_LINKS: {
+  href: string;
+  label: string;
+  icon: typeof User;
+  description: string;
+  profileTypes: ProfileType[];
+}[] = [
+  {
+    href: "/dashboard/perfil",
+    label: "Mi perfil",
+    icon: User,
+    description: "Edita tu información pública",
+    profileTypes: ["professional", "company", "individual"],
+  },
+  {
+    href: "/dashboard/ofertas",
+    label: "Mis ofertas",
+    icon: Briefcase,
+    description: "Gestiona publicaciones y candidaturas",
+    profileTypes: ["professional", "company"],
+  },
+  {
+    href: "/dashboard/calendario",
+    label: "Calendario",
+    icon: Calendar,
+    description: "Disponibilidad y reservas",
+    profileTypes: ["professional"],
+  },
+  {
+    href: "/mensajes",
+    label: "Mensajes",
+    icon: MessageSquare,
+    description: "Conversaciones activas",
+    profileTypes: ["professional", "company", "individual"],
+  },
+  {
+    href: "/dashboard/notificaciones",
+    label: "Notificaciones",
+    icon: Bell,
+    description: "Preferencias y alertas",
+    profileTypes: ["professional", "company", "individual"],
+  },
+  {
+    href: "/dashboard/configuracion",
+    label: "Configuración",
+    icon: Settings,
+    description: "Ajustes de cuenta",
+    profileTypes: ["professional", "company", "individual"],
+  },
+];
 
 export default async function DashboardPage({
   searchParams,
@@ -35,14 +87,10 @@ export default async function DashboardPage({
     .eq("id", user.id)
     .single();
 
-  const dashboardLinks = [
-  { href: "/dashboard/perfil", label: "Mi perfil", icon: User, description: "Edita tu información profesional" },
-  { href: "/dashboard/ofertas", label: "Mis ofertas", icon: Briefcase, description: "Gestiona publicaciones y candidaturas" },
-  { href: "/dashboard/calendario", label: "Calendario", icon: Calendar, description: "Disponibilidad y reservas" },
-  { href: "/mensajes", label: "Mensajes", icon: MessageSquare, description: "Conversaciones activas" },
-  { href: "/dashboard/notificaciones", label: "Notificaciones", icon: Bell, description: "Preferencias y alertas" },
-  { href: "/dashboard/configuracion", label: "Configuración", icon: Settings, description: "Ajustes de cuenta" },
-];
+  const profileType = (profile?.profile_type ?? "professional") as ProfileType;
+  const dashboardLinks = DASHBOARD_LINKS.filter((link) =>
+    link.profileTypes.includes(profileType)
+  );
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">

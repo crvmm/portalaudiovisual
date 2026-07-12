@@ -1,8 +1,30 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileEditor } from "@/components/profile/profile-editor";
+import { CompanyProfileEditor } from "@/components/profile/company-profile-editor";
+import { IndividualProfileEditor } from "@/components/profile/individual-profile-editor";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
 import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
+import type { ProfileType } from "@/types";
+
+const PROFILE_COPY: Record<
+  ProfileType,
+  { title: string; description: string }
+> = {
+  professional: {
+    title: "Editar perfil profesional",
+    description: "Completa tu perfil para que las oportunidades te encuentren",
+  },
+  company: {
+    title: "Perfil de empresa",
+    description: "Presenta tu empresa a profesionales y candidatos",
+  },
+  individual: {
+    title: "Mi perfil",
+    description: "Tu información de contacto y ubicación",
+  },
+};
 
 export default async function ProfileEditPage({
   searchParams,
@@ -11,7 +33,9 @@ export default async function ProfileEditPage({
 }) {
   const params = await searchParams;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     if (!isAuthModalOpenFromParams(params)) {
@@ -26,18 +50,27 @@ export default async function ProfileEditPage({
     .eq("id", user.id)
     .single();
 
-  if (profile?.profile_type !== "professional") {
-    redirect("/dashboard");
-  }
+  const profileType = (profile?.profile_type ?? "professional") as ProfileType;
+  const copy = PROFILE_COPY[profileType];
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Editar perfil profesional</h1>
-      <p className="mt-2 text-muted-foreground">
-        Completa tu perfil para que las oportunidades te encuentren
-      </p>
+      <h1 className="text-2xl font-bold">{copy.title}</h1>
+      <p className="mt-2 text-muted-foreground">{copy.description}</p>
       <div className="mt-8">
-        <ProfileEditor />
+        {profileType === "company" ? (
+          <CompanyProfileEditor />
+        ) : profileType === "individual" ? (
+          <IndividualProfileEditor />
+        ) : (
+          <Suspense
+            fallback={
+              <p className="py-16 text-center text-muted-foreground">Cargando perfil...</p>
+            }
+          >
+            <ProfileEditor />
+          </Suspense>
+        )}
       </div>
     </div>
   );
