@@ -23,39 +23,39 @@ import {
 const heroTools: {
   Icon: LucideIcon;
   label: string;
-  className: string;
   delay: string;
+  placement?: string;
 }[] = [
-  { Icon: Camera, label: "Foto", className: "left-[18%] top-[10%] -translate-x-1/2", delay: "0s" },
-  { Icon: Video, label: "Vídeo", className: "left-1/2 top-[8%] -translate-x-1/2", delay: "0.4s" },
-  { Icon: Mic, label: "Sonido", className: "left-[82%] top-[12%] -translate-x-1/2", delay: "0.8s" },
-  { Icon: Clapperboard, label: "Producción", className: "left-[16%] top-[40%] -translate-x-1/2", delay: "1.2s" },
-  { Icon: Scissors, label: "Edición", className: "left-1/2 top-[36%] -translate-x-1/2", delay: "1.6s" },
-  { Icon: MonitorPlay, label: "Motion", className: "left-[84%] top-[38%] -translate-x-1/2", delay: "2s" },
-  { Icon: Headphones, label: "Post", className: "left-[22%] top-[72%] -translate-x-1/2", delay: "2.4s" },
-  { Icon: Aperture, label: "Color", className: "left-[78%] top-[74%] -translate-x-1/2", delay: "2.8s" },
+  { Icon: Camera, label: "Foto", delay: "0s" },
+  { Icon: Video, label: "Vídeo", delay: "0.4s" },
+  { Icon: Mic, label: "Sonido", delay: "0.8s" },
+  { Icon: Clapperboard, label: "Producción", delay: "1.2s" },
+  { Icon: Scissors, label: "Edición", delay: "1.6s" },
+  { Icon: MonitorPlay, label: "Motion", delay: "2s" },
+  { Icon: Headphones, label: "Post", delay: "2.4s", placement: "col-start-1 row-start-3" },
+  { Icon: Aperture, label: "Color", delay: "2.8s", placement: "col-start-3 row-start-3" },
 ];
 
 function HeroToolsVisual() {
   return (
     <div
-      className="viewfinder-frame studio-grid relative mx-auto aspect-[5/4] w-full max-w-md min-h-[18rem] rounded-sm border border-border bg-surface/80 sm:min-h-[20rem] lg:mx-0 lg:max-w-none"
+      className="viewfinder-frame studio-grid relative mx-auto aspect-[4/5] w-full max-w-sm min-h-[22rem] rounded-sm border border-border bg-surface/80 sm:min-h-[26rem] sm:max-w-md lg:mx-0 lg:max-w-lg lg:min-h-[28rem]"
       aria-hidden="true"
     >
-      <div className="absolute inset-11 sm:inset-14">
-        {heroTools.map(({ Icon, label, className, delay }) => (
+      <div className="absolute inset-10 grid grid-cols-3 grid-rows-3 items-center justify-items-center gap-x-5 gap-y-7 sm:inset-12 sm:gap-x-8 sm:gap-y-9 lg:inset-14 lg:gap-x-10 lg:gap-y-10">
+        {heroTools.map(({ Icon, label, delay, placement }) => (
           <div
             key={label}
-            className={`absolute ${className}`}
+            className={placement}
           >
             <div
-              className="hero-icon-float flex flex-col items-center gap-2"
+              className="hero-icon-float flex flex-col items-center gap-2.5"
               style={{ animationDelay: delay }}
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.52_0.19_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.52_0.19_285/0.16)]">
-                <Icon className="h-6 w-6" strokeWidth={1.5} />
+              <div className="flex h-12 w-12 items-center justify-center rounded-md border border-border bg-card text-stage shadow-[0_4px_16px_oklch(0.52_0.19_285/0.1)] transition-[transform,box-shadow,border-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-105 hover:border-primary/40 hover:text-primary hover:shadow-[0_8px_24px_oklch(0.52_0.19_285/0.16)] sm:h-14 sm:w-14">
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={1.5} />
               </div>
-              <span className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <span className="whitespace-nowrap font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground sm:text-[0.6875rem]">
                 {label}
               </span>
             </div>
