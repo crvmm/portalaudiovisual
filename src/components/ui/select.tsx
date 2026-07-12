@@ -245,18 +245,17 @@ function SelectChipRemove({
 function ChipMultiValueContainer(
   props: MultiValueGenericProps<SelectOption, boolean, GroupBase<SelectOption>>
 ) {
-  const { children, innerProps } = props;
+  const chipClass =
+    "m-0.5 inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground";
 
   return (
-    <div
-      {...innerProps}
-      className={cn(
-        "m-0.5 inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground",
-        innerProps.className
-      )}
-    >
-      {children}
-    </div>
+    <components.MultiValueContainer
+      {...props}
+      innerProps={{
+        ...(props.innerProps ?? {}),
+        className: cn(chipClass, props.innerProps?.className),
+      }}
+    />
   );
 }
 
@@ -283,7 +282,7 @@ function ChipMultiValueRemove(
 function ChipSingleValue(
   props: SingleValueProps<SelectOption, boolean, GroupBase<SelectOption>>
 ) {
-  const { children, innerProps, selectProps, isDisabled } = props;
+  const { children, selectProps, isDisabled } = props;
   const { onClear } = useSelectFieldContext();
   const showRemove = selectProps.isClearable && !isDisabled && Boolean(onClear);
 
@@ -307,12 +306,12 @@ function ChipSingleValue(
     : undefined;
 
   return (
-    <div {...innerProps} className={cn("max-w-full", innerProps.className)}>
+    <components.SingleValue {...props}>
       <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground">
         <span className="truncate">{children}</span>
         {removeInnerProps && <SelectChipRemove innerProps={removeInnerProps} />}
       </span>
-    </div>
+    </components.SingleValue>
   );
 }
 
