@@ -1,27 +1,17 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
-import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 import { JOB_POSTING_TYPE_LABELS, type JobPostingType } from "@/types";
 import { formatDate } from "@/lib/utils";
 import { Users } from "lucide-react";
 
-export default async function DashboardJobsPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function DashboardJobsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    if (!isAuthModalOpenFromParams(params)) {
-      redirect(authModalLoginUrl("/dashboard/ofertas"));
-    }
     return <AuthRequiredPlaceholder message="Inicia sesión para ver tus ofertas" />;
   }
 

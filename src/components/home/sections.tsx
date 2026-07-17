@@ -163,10 +163,6 @@ export function HeroSection() {
     <section className="hero-spotlight relative overflow-hidden border-b border-border">
       <div className="mx-auto grid max-w-6xl gap-14 px-4 py-20 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-12 lg:py-28">
         <div className="relative z-10 lg:max-w-xl">
-          <p className="mb-6 inline-flex items-center gap-2.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            <span className="rec-dot rec-dot-pulse" aria-hidden="true" />
-            Plataforma sector audiovisual
-          </p>
           <h1 className="font-display text-balance text-[2.35rem] leading-[1.02] font-medium tracking-tight sm:text-5xl lg:text-[3.6rem]">
             El sector audiovisual,{" "}
             <span className="text-stage">conectado</span> de verdad

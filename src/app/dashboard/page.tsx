@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import {
@@ -11,7 +10,6 @@ import {
   Plus,
 } from "lucide-react";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
-import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 import type { ProfileType } from "@/types";
 
 const DASHBOARD_LINKS: {
@@ -65,19 +63,11 @@ const DASHBOARD_LINKS: {
   },
 ];
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    if (!isAuthModalOpenFromParams(params)) {
-      redirect(authModalLoginUrl("/dashboard"));
-    }
     return <AuthRequiredPlaceholder message="Inicia sesión para acceder a tu panel" />;
   }
 

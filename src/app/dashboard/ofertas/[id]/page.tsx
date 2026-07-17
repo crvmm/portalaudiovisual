@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { ApplicationStatusActions } from "@/components/applications/application-status-actions";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
-import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 import { MessageSquare, ExternalLink } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import type { ApplicationStatus } from "@/types";
@@ -24,20 +23,14 @@ const STATUS_LABELS: Record<ApplicationStatus, string> = {
 
 export default async function DashboardJobDetailPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<Record<string, string | undefined>>;
 }) {
   const { id } = await params;
-  const query = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    if (!isAuthModalOpenFromParams(query)) {
-      redirect(authModalLoginUrl(`/dashboard/ofertas/${id}`));
-    }
     return <AuthRequiredPlaceholder message="Inicia sesión para ver esta oferta" />;
   }
 

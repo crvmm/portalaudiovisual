@@ -1,11 +1,9 @@
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ProfileEditor } from "@/components/profile/profile-editor";
 import { CompanyProfileEditor } from "@/components/profile/company-profile-editor";
 import { IndividualProfileEditor } from "@/components/profile/individual-profile-editor";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
-import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 import type { ProfileType } from "@/types";
 
 const PROFILE_COPY: Record<
@@ -26,21 +24,13 @@ const PROFILE_COPY: Record<
   },
 };
 
-export default async function ProfileEditPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function ProfileEditPage() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
   if (!user) {
-    if (!isAuthModalOpenFromParams(params)) {
-      redirect(authModalLoginUrl("/dashboard/perfil"));
-    }
     return <AuthRequiredPlaceholder message="Inicia sesión para editar tu perfil" />;
   }
 

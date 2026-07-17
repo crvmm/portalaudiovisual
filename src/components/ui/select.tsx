@@ -5,8 +5,7 @@ import ReactSelect, {
   type ClearIndicatorProps,
   type DropdownIndicatorProps,
   type GroupBase,
-  type MultiValueGenericProps,
-  type MultiValueRemoveProps,
+  type MultiValueProps,
   type Props as ReactSelectProps,
   type SingleValueProps,
   type StylesConfig,
@@ -138,15 +137,14 @@ const baseSelectStyles: BaseSelectStyles = {
     backgroundColor: "transparent",
     margin: 0,
     padding: 0,
+    border: "none",
+    boxShadow: "none",
   }),
   multiValueLabel: (base) => ({
     ...base,
     padding: 0,
     fontSize: "0.875rem",
     color: "var(--foreground)",
-  }),
-  multiValueRemove: () => ({
-    display: "none",
   }),
 };
 
@@ -223,6 +221,19 @@ function ClearIndicator(
   );
 }
 
+const chipClassName =
+  "inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground";
+
+function wrapRemoveHandler<E extends React.SyntheticEvent<HTMLDivElement>>(
+  handler?: (event: E) => void
+) {
+  return (event: E) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handler?.(event);
+  };
+}
+
 function SelectChipRemove({
   innerProps,
 }: {
@@ -231,6 +242,8 @@ function SelectChipRemove({
   return (
     <div
       {...innerProps}
+      role="button"
+      tabIndex={-1}
       className={cn(
         "shrink-0 cursor-pointer rounded p-0.5 text-primary/65 transition-colors hover:bg-primary/15 hover:text-primary",
         innerProps.className
@@ -242,74 +255,51 @@ function SelectChipRemove({
   );
 }
 
-function ChipMultiValueContainer(
-  props: MultiValueGenericProps<SelectOption, boolean, GroupBase<SelectOption>>
+function ChipMultiValue(
+  props: MultiValueProps<SelectOption, true, GroupBase<SelectOption>>
 ) {
-  const chipClass =
-    "m-0.5 inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground";
+  const { data, innerProps, isDisabled, removeProps, selectProps } = props;
+  const showRemove = !isDisabled && selectProps.isClearable !== false;
 
   return (
-    <components.MultiValueContainer
-      {...props}
-      innerProps={{
-        ...(props.innerProps ?? {}),
-        className: cn(chipClass, props.innerProps?.className),
-      }}
-    />
-  );
-}
-
-function ChipMultiValueLabel(
-  props: MultiValueGenericProps<SelectOption, boolean, GroupBase<SelectOption>>
-) {
-  return (
-    <components.MultiValueLabel {...props}>
-      <span className="truncate">{props.children}</span>
-    </components.MultiValueLabel>
-  );
-}
-
-function ChipMultiValueRemove(
-  props: MultiValueRemoveProps<SelectOption, boolean, GroupBase<SelectOption>>
-) {
-  return (
-    <components.MultiValueRemove {...props}>
-      <X size={14} strokeWidth={2} className="pointer-events-none" aria-hidden />
-    </components.MultiValueRemove>
+    <div {...innerProps}>
+      <span className={chipClassName}>
+        <span className="truncate">{data.label}</span>
+        {showRemove && (
+          <SelectChipRemove
+            innerProps={{
+              ...removeProps,
+              onMouseDown: wrapRemoveHandler(removeProps.onMouseDown),
+              onClick: wrapRemoveHandler(removeProps.onClick),
+              onTouchEnd: wrapRemoveHandler(removeProps.onTouchEnd),
+            }}
+          />
+        )}
+      </span>
+    </div>
   );
 }
 
 function ChipSingleValue(
-  props: SingleValueProps<SelectOption, boolean, GroupBase<SelectOption>>
+  props: SingleValueProps<SelectOption, false, GroupBase<SelectOption>>
 ) {
   const { children, selectProps, isDisabled } = props;
   const { onClear } = useSelectFieldContext();
   const showRemove = selectProps.isClearable && !isDisabled && Boolean(onClear);
 
-  const removeInnerProps = showRemove
-    ? {
-        onMouseDown: (event: React.MouseEvent<HTMLDivElement>) => {
-          event.preventDefault();
-          event.stopPropagation();
-        },
-        onClick: (event: React.MouseEvent<HTMLDivElement>) => {
-          event.preventDefault();
-          event.stopPropagation();
-          onClear?.();
-        },
-        onTouchEnd: (event: React.TouchEvent<HTMLDivElement>) => {
-          event.preventDefault();
-          event.stopPropagation();
-          onClear?.();
-        },
-      }
-    : undefined;
-
   return (
     <components.SingleValue {...props}>
-      <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-primary/35 bg-primary/10 py-0.5 pl-2.5 pr-1 text-sm font-medium leading-5 text-foreground">
+      <span className={chipClassName}>
         <span className="truncate">{children}</span>
-        {removeInnerProps && <SelectChipRemove innerProps={removeInnerProps} />}
+        {showRemove && (
+          <SelectChipRemove
+            innerProps={{
+              onMouseDown: wrapRemoveHandler(),
+              onClick: wrapRemoveHandler(() => onClear?.()),
+              onTouchEnd: wrapRemoveHandler(() => onClear?.()),
+            }}
+          />
+        )}
       </span>
     </components.SingleValue>
   );
@@ -328,6 +318,13 @@ function SelectClearIndicator(
 function MultiSelectClearIndicator(
   props: ClearIndicatorProps<SelectOption, boolean, GroupBase<SelectOption>>
 ) {
+  const hasValues =
+    Array.isArray(props.selectProps.value) && props.selectProps.value.length > 0;
+
+  if (hasValues && props.selectProps.isClearable) {
+    return null;
+  }
+
   return <ClearIndicator {...props} />;
 }
 
@@ -435,9 +432,7 @@ export function MultiSelect({
         components={{
           DropdownIndicator,
           ClearIndicator: MultiSelectClearIndicator,
-          MultiValueContainer: ChipMultiValueContainer,
-          MultiValueLabel: ChipMultiValueLabel,
-          MultiValueRemove: ChipMultiValueRemove,
+          MultiValue: ChipMultiValue,
         }}
         noOptionsMessage={() => noOptionsMessage}
         classNamePrefix="pa-select"

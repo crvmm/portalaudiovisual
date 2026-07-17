@@ -8,7 +8,7 @@
   ],
   "pages_build_output_dir": ".open-next/pages-deploy",
   "vars": {
-    "NEXT_PUBLIC_SUPABASE_URL": "https://discusses-creator-institution-statutory.trycloudflare.com",
+    "NEXT_PUBLIC_SUPABASE_URL": "https://day-participate-membership-received.trycloudflare.com",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzgzODExNjUzLCJleHAiOjE5NDE0OTE2NTN9.zmxP7Le4B6TqfSJBcYoubpeXiVlcqGiQbGjjkcAt-d8"
   }
 }

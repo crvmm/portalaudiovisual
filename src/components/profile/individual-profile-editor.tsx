@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { authModalLoginUrl } from "@/lib/auth/redirect";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,7 +39,7 @@ export function IndividualProfileEditor() {
     } = await supabase.auth.getUser();
 
     if (!user) {
-      router.replace(authModalLoginUrl("/dashboard/perfil"));
+      setLoading(false);
       return;
     }
 

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BrandLogo } from "@/components/layout/brand-logo";
 
 const links = [
   { href: "/profesionales", label: "Profesionales" },
@@ -20,9 +21,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div>
-            <p className="font-display text-3xl font-medium leading-none tracking-tight sm:text-4xl">
-              Portal<span className="text-stage">.</span>Audiovisual
-            </p>
+            <BrandLogo size="lg" />
             <p className="mt-4 max-w-sm text-base leading-relaxed text-muted-foreground">
               Talento, empleo, proyectos y servicios audiovisuales en un solo lugar.
             </p>

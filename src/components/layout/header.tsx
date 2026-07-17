@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeaderAuth } from "@/components/layout/header-auth";
+import { BrandLogo } from "@/components/layout/brand-logo";
 
 const navItems = [
   { href: "/profesionales", label: "Profesionales" },
@@ -12,13 +13,7 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/92 backdrop-blur-sm">
       <div className="mx-auto flex h-[3.75rem] max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2.5 font-display text-[1.15rem] font-medium tracking-tight text-foreground"
-        >
-          <span className="rec-dot rec-dot-pulse" aria-hidden="true" />
-          Portal<span className="text-stage">.</span>Audiovisual
-        </Link>
+        <BrandLogo size="sm" href="/" />
 
         <nav className="hidden items-center gap-0.5 md:flex">
           {navItems.map(({ href, label }) => (

@@ -161,7 +161,8 @@ export function AuthModal() {
         role="dialog"
         aria-modal="true"
         aria-labelledby="auth-modal-title"
-        className="relative w-full max-w-md rounded-lg border border-border bg-card shadow-[0_24px_64px_oklch(0.26_0.04_290/0.16)]"
+        onClick={(event) => event.stopPropagation()}
+        className="relative z-10 w-full max-w-md rounded-lg border border-border bg-card shadow-[0_24px_64px_oklch(0.26_0.04_290/0.16)]"
       >
         <button
           type="button"

@@ -1,22 +1,12 @@
-import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { JobPostingForm } from "@/components/jobs/job-posting-form";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
-import { authModalLoginUrl, isAuthModalOpenFromParams } from "@/lib/auth/redirect";
 
-export default async function PublishPage({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | undefined>>;
-}) {
-  const params = await searchParams;
+export default async function PublishPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    if (!isAuthModalOpenFromParams(params)) {
-      redirect(authModalLoginUrl("/publicar"));
-    }
     return <AuthRequiredPlaceholder message="Inicia sesión para publicar una oferta" />;
   }
 

@@ -29,6 +29,7 @@ import {
 } from "@/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { formatSpanishLocation } from "@/lib/spain-territories";
+import { getPublicProfileUrl } from "@/lib/profile-urls";
 
 export default async function JobDetailPage({
   params,
@@ -145,7 +146,10 @@ export default async function JobDetailPage({
             <h1 className="mt-4 text-2xl font-bold">{posting.title}</h1>
             <p className="mt-2 text-sm text-muted-foreground">
               Publicada por{" "}
-              <Link href={`/empresas/${author.id}`} className="text-primary hover:underline">
+              <Link
+                href={getPublicProfileUrl(author.profile_type, author.id)}
+                className="text-primary hover:underline"
+              >
                 {author.display_name}
               </Link>
               {" · "}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getOrCreateConversation } from "@/hooks/use-messages";
@@ -8,6 +8,7 @@ import { ChatThread } from "@/components/chat/chat-thread";
 import { Avatar } from "@/components/ui/avatar";
 import { formatRelativeTime } from "@/lib/utils";
 import { authModalLoginUrl, isAuthModalOpen } from "@/lib/auth/redirect";
+import { useAuthModal } from "@/components/auth/auth-modal-context";
 import { MessageSquare } from "lucide-react";
 
 interface ConversationItem {
@@ -27,6 +28,8 @@ interface ConversationItem {
 function MessagesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { openAuth } = useAuthModal();
+  const authPromptedRef = useRef(false);
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(
     searchParams.get("conversacion")
@@ -107,12 +110,20 @@ function MessagesContent() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         if (isAuthModalOpen(searchParams)) {
+          authPromptedRef.current = true;
           setNeedsAuth(true);
           setLoading(false);
           return;
         }
 
-        router.replace(authModalLoginUrl("/mensajes"));
+        if (!authPromptedRef.current) {
+          authPromptedRef.current = true;
+          router.replace(authModalLoginUrl("/mensajes"));
+          return;
+        }
+
+        setNeedsAuth(true);
+        setLoading(false);
         return;
       }
       setUserId(user.id);
@@ -166,11 +177,18 @@ function MessagesContent() {
 
   if (needsAuth) {
     return (
-      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 text-center">
+      <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6">
         <MessageSquare className="mx-auto h-10 w-10 text-muted-foreground/50" />
         <p className="mt-4 text-muted-foreground">
           Inicia sesión para ver tus mensajes
         </p>
+        <button
+          type="button"
+          onClick={() => openAuth({ mode: "login", redirect: "/mensajes" })}
+          className="btn-primary-glow mt-4 rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-105"
+        >
+          Iniciar sesión
+        </button>
       </div>
     );
   }
