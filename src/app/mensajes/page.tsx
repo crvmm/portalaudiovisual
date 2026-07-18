@@ -40,6 +40,11 @@ function MessagesContent() {
   >([]);
   const [loading, setLoading] = useState(true);
   const [needsAuth, setNeedsAuth] = useState(false);
+  const [activeContext, setActiveContext] = useState<{
+    jobPostingId: string | null;
+    jobTitle: string | null;
+    serviceId: string | null;
+  }>({ jobPostingId: null, jobTitle: null, serviceId: null });
 
   const loadConversations = useCallback(async (uid: string) => {
     const supabase = createClient();
@@ -132,13 +137,37 @@ function MessagesContent() {
       const oferta = searchParams.get("oferta");
       const servicio = searchParams.get("servicio");
 
-      if (contactar) {
-        const convId = await getOrCreateConversation(user.id, contactar, {
-          jobPostingId: oferta ?? undefined,
+      let contactUserId = contactar;
+      let jobPostingId = oferta ?? undefined;
+      let conversationTitle: string | undefined;
+
+      if (oferta) {
+        const { data: job } = await supabase
+          .from("job_postings")
+          .select("author_id, title")
+          .eq("id", oferta)
+          .single();
+
+        if (job) {
+          contactUserId = contactUserId ?? job.author_id;
+          conversationTitle = job.title;
+          jobPostingId = oferta;
+        }
+      }
+
+      if (contactUserId) {
+        const convId = await getOrCreateConversation(user.id, contactUserId, {
+          jobPostingId,
           serviceId: servicio ?? undefined,
+          title: conversationTitle,
         });
         if (convId) {
           setActiveId(convId);
+          setActiveContext({
+            jobPostingId: jobPostingId ?? null,
+            jobTitle: conversationTitle ?? null,
+            serviceId: servicio,
+          });
           router.replace(`/mensajes?conversacion=${convId}`);
         }
       }
@@ -168,6 +197,21 @@ function MessagesContent() {
             return prof;
           })
         );
+      });
+
+    supabase
+      .from("conversations")
+      .select("job_posting_id, service_id, title, job_postings(title)")
+      .eq("id", activeId)
+      .single()
+      .then(({ data }) => {
+        if (!data) return;
+        const job = data.job_postings as unknown as { title: string } | null;
+        setActiveContext({
+          jobPostingId: data.job_posting_id,
+          jobTitle: job?.title ?? data.title,
+          serviceId: data.service_id,
+        });
       });
   }, [activeId]);
 
@@ -212,6 +256,11 @@ function MessagesContent() {
                 type="button"
                 onClick={() => {
                   setActiveId(conv.id);
+                  setActiveContext({
+                    jobPostingId: conv.job_posting_id,
+                    jobTitle: conv.title,
+                    serviceId: conv.service_id,
+                  });
                   router.push(`/mensajes?conversacion=${conv.id}`);
                 }}
                 className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-accent/50 ${
@@ -249,6 +298,8 @@ function MessagesContent() {
               conversationId={activeId}
               currentUserId={userId}
               participants={participants}
+              jobPostingId={activeContext.jobPostingId}
+              jobTitle={activeContext.jobTitle}
             />
           ) : (
             <div className="flex flex-1 items-center justify-center text-muted-foreground">

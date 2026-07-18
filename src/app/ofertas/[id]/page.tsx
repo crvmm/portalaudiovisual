@@ -364,7 +364,7 @@ export default async function JobDetailPage({
                     <Badge variant="primary" className="mb-3">
                       Candidatura enviada — {applications.status}
                     </Badge>
-                    <Link href={`/mensajes?oferta=${id}`}>
+                    <Link href={`/mensajes?contactar=${posting.author_id}&oferta=${id}`}>
                       <Button variant="outline" className="w-full">
                         <MessageSquare className="h-4 w-4" />
                         Enviar mensaje

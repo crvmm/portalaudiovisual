@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Send, Paperclip } from "lucide-react";
+import Link from "next/link";
+import { Send, Paperclip, Briefcase } from "lucide-react";
 import { useMessages, sendMessage } from "@/hooks/use-messages";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,17 @@ interface ChatThreadProps {
   conversationId: string;
   currentUserId: string;
   participants: { id: string; display_name: string; avatar_url: string | null }[];
+  jobPostingId?: string | null;
+  jobTitle?: string | null;
 }
 
-export function ChatThread({ conversationId, currentUserId, participants }: ChatThreadProps) {
+export function ChatThread({
+  conversationId,
+  currentUserId,
+  participants,
+  jobPostingId,
+  jobTitle,
+}: ChatThreadProps) {
   const { messages, loading } = useMessages(conversationId);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
@@ -73,12 +82,23 @@ export function ChatThread({ conversationId, currentUserId, participants }: Chat
     <div className="flex flex-1 flex-col">
       {/* Header */}
       {otherParticipant && (
-        <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-          <Avatar
-            src={otherParticipant.avatar_url}
-            name={otherParticipant.display_name}
-          />
-          <p className="font-medium">{otherParticipant.display_name}</p>
+        <div className="border-b border-border px-4 py-3">
+          <div className="flex items-center gap-3">
+            <Avatar
+              src={otherParticipant.avatar_url}
+              name={otherParticipant.display_name}
+            />
+            <p className="font-medium">{otherParticipant.display_name}</p>
+          </div>
+          {jobPostingId && (
+            <Link
+              href={`/ofertas/${jobPostingId}`}
+              className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+            >
+              <Briefcase className="h-3.5 w-3.5" />
+              {jobTitle ? `Oferta: ${jobTitle}` : "Ver oferta relacionada"}
+            </Link>
+          )}
         </div>
       )}
 
