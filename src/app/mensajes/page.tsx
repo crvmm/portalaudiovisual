@@ -30,6 +30,7 @@ function MessagesContent() {
   const searchParams = useSearchParams();
   const { openAuth } = useAuthModal();
   const authPromptedRef = useRef(false);
+  const contactHandledRef = useRef(false);
   const [conversations, setConversations] = useState<ConversationItem[]>([]);
   const [activeId, setActiveId] = useState<string | null>(
     searchParams.get("conversacion")
@@ -55,6 +56,7 @@ function MessagesContent() {
       .eq("profile_id", uid);
 
     if (!participations?.length) {
+      setConversations([]);
       setLoading(false);
       return;
     }
@@ -123,7 +125,10 @@ function MessagesContent() {
 
         if (!authPromptedRef.current) {
           authPromptedRef.current = true;
-          router.replace(authModalLoginUrl("/mensajes"));
+          const redirectPath = searchParams.toString()
+            ? `/mensajes?${searchParams.toString()}`
+            : "/mensajes";
+          router.replace(authModalLoginUrl(redirectPath));
           return;
         }
 
@@ -133,42 +138,55 @@ function MessagesContent() {
       }
       setUserId(user.id);
 
+      const conversacion = searchParams.get("conversacion");
       const contactar = searchParams.get("contactar");
       const oferta = searchParams.get("oferta");
       const servicio = searchParams.get("servicio");
 
-      let contactUserId = contactar;
-      let jobPostingId = oferta ?? undefined;
-      let conversationTitle: string | undefined;
-
-      if (oferta) {
-        const { data: job } = await supabase
-          .from("job_postings")
-          .select("author_id, title")
-          .eq("id", oferta)
-          .single();
-
-        if (job) {
-          contactUserId = contactUserId ?? job.author_id;
-          conversationTitle = job.title;
-          jobPostingId = oferta;
-        }
+      if (conversacion) {
+        setActiveId(conversacion);
       }
 
-      if (contactUserId) {
-        const convId = await getOrCreateConversation(user.id, contactUserId, {
-          jobPostingId,
-          serviceId: servicio ?? undefined,
-          title: conversationTitle,
-        });
-        if (convId) {
-          setActiveId(convId);
-          setActiveContext({
-            jobPostingId: jobPostingId ?? null,
-            jobTitle: conversationTitle ?? null,
-            serviceId: servicio,
+      const shouldHandleContact =
+        contactar && (!contactHandledRef.current || !conversacion);
+
+      if (shouldHandleContact) {
+        contactHandledRef.current = true;
+
+        let contactUserId = contactar;
+        let jobPostingId = oferta ?? undefined;
+        let conversationTitle: string | undefined;
+
+        if (oferta) {
+          const { data: job } = await supabase
+            .from("job_postings")
+            .select("author_id, title")
+            .eq("id", oferta)
+            .single();
+
+          if (job) {
+            contactUserId = contactUserId ?? job.author_id;
+            conversationTitle = job.title;
+            jobPostingId = oferta;
+          }
+        }
+
+        if (contactUserId && contactUserId !== user.id) {
+          const convId = await getOrCreateConversation(user.id, contactUserId, {
+            jobPostingId,
+            serviceId: servicio ?? undefined,
+            title: conversationTitle,
           });
-          router.replace(`/mensajes?conversacion=${convId}`);
+
+          if (convId) {
+            setActiveId(convId);
+            setActiveContext({
+              jobPostingId: jobPostingId ?? null,
+              jobTitle: conversationTitle ?? null,
+              serviceId: servicio,
+            });
+            router.replace(`/mensajes?conversacion=${convId}`);
+          }
         }
       }
 
@@ -177,6 +195,13 @@ function MessagesContent() {
 
     init();
   }, [router, searchParams, loadConversations]);
+
+  useEffect(() => {
+    const conversacion = searchParams.get("conversacion");
+    if (conversacion) {
+      setActiveId(conversacion);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!activeId) return;
