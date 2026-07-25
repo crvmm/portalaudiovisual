@@ -325,7 +325,7 @@ RETURNS TABLE (
 BEGIN
   RETURN QUERY
   SELECT
-    p.id,
+    pp.id,
     pr.display_name,
     pp.headline,
     pp.location_city,
