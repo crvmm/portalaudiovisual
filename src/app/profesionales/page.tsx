@@ -1,7 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
-import { MapPin, Star } from "lucide-react";
+import { MapPin, Star, Clock } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { ProfessionalsFilterForm } from "@/components/professionals/professionals-filter-form";
+import { EXPERIENCE_LEVEL_LABELS, type ExperienceLevel } from "@/types";
+import { formatCurrency } from "@/lib/utils";
+import { formatSpanishLocation } from "@/lib/spain-territories";
 
 interface SearchParams {
   categoria?: string;
@@ -13,9 +17,14 @@ interface ProfessionalListItem {
   id: string;
   display_name: string;
   headline: string | null;
+  bio: string | null;
   location_city: string | null;
+  location_province: string | null;
+  location_region: string | null;
   years_experience: number | null;
+  experience_level: string | null;
   hourly_rate_min: number | null;
+  is_available: boolean;
   avg_rating: number;
   review_count: number;
 }
@@ -59,9 +68,14 @@ export default async function ProfessionalsPage({
       .select(`
         id,
         headline,
+        bio,
         location_city,
+        location_province,
+        location_region,
         years_experience,
+        experience_level,
         hourly_rate_min,
+        is_available,
         profiles!inner (
           display_name,
           is_active
@@ -91,9 +105,14 @@ export default async function ProfessionalsPage({
           id: row.id,
           display_name: profile.display_name,
           headline: row.headline,
+          bio: row.bio,
           location_city: row.location_city,
+          location_province: row.location_province,
+          location_region: row.location_region,
           years_experience: row.years_experience,
+          experience_level: row.experience_level,
           hourly_rate_min: row.hourly_rate_min,
+          is_available: row.is_available,
           avg_rating: 0,
           review_count: 0,
         };
@@ -111,14 +130,24 @@ export default async function ProfessionalsPage({
     .order("sort_order");
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <h1 className="font-display text-3xl font-medium">Profesionales</h1>
-      <p className="mt-2 max-w-xl text-muted-foreground">
-        Talento por especialidad, ciudad y disponibilidad
-      </p>
+    <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Profesionales</h1>
+          <p className="mt-2 text-muted-foreground">
+            Talento por especialidad, ciudad y disponibilidad
+          </p>
+        </div>
+        <Link
+          href="/?auth=register&tipo=professional"
+          className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+        >
+          Crear perfil profesional
+        </Link>
+      </div>
 
       <div className="mt-10 flex flex-col gap-10 lg:flex-row">
-        <aside className="shrink-0 lg:w-56">
+        <aside className="shrink-0 lg:w-72">
           <ProfessionalsFilterForm
             initialQuery={params.q}
             initialCity={params.ciudad}
@@ -130,67 +159,91 @@ export default async function ProfessionalsPage({
           />
         </aside>
 
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           {professionals.length > 0 ? (
-            <ul className="divide-y divide-border">
+            <div className="space-y-4">
               {professionals.map((prof) => (
-                <li key={prof.id}>
-                  <Link
-                    href={`/profesionales/${prof.id}`}
-                    className="group flex flex-col gap-2 py-5 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent/40 sm:flex-row sm:items-center sm:justify-between sm:px-3"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <h2 className="font-medium group-hover:text-primary">
-                        {prof.display_name}
-                      </h2>
-                      {prof.headline && (
+                <Link
+                  key={prof.id}
+                  href={`/profesionales/${prof.id}`}
+                  className="block rounded-xl border border-border bg-card p-6 transition-colors hover:border-signal/35"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-4">
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        {prof.is_available ? (
+                          <Badge variant="success">Disponible</Badge>
+                        ) : (
+                          <Badge variant="muted">No disponible</Badge>
+                        )}
+                        {prof.experience_level && (
+                          <Badge variant="signal">
+                            {EXPERIENCE_LEVEL_LABELS[prof.experience_level as ExperienceLevel]}
+                          </Badge>
+                        )}
+                      </div>
+                      <h2 className="mt-2 text-lg font-semibold">{prof.display_name}</h2>
+                      {(prof.headline || prof.bio) && (
                         <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
-                          {prof.headline}
+                          {prof.headline ?? prof.bio}
                         </p>
                       )}
-                      <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
-                        {prof.location_city && (
-                          <span className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            {prof.location_city}
-                          </span>
-                        )}
-                        {prof.years_experience && (
-                          <span>{prof.years_experience} años exp.</span>
-                        )}
-                        {prof.hourly_rate_min && (
-                          <span>desde {prof.hourly_rate_min}€/h</span>
-                        )}
-                      </div>
                     </div>
-                    {prof.avg_rating > 0 && (
-                      <div className="flex shrink-0 items-center gap-1 text-sm text-primary">
-                        <Star className="h-3.5 w-3.5 fill-current" />
-                        {prof.avg_rating}
+                    {prof.hourly_rate_min && (
+                      <div className="text-right text-sm">
+                        <span className="text-muted-foreground">Tarifa</span>
+                        <p className="font-semibold">
+                          desde {formatCurrency(prof.hourly_rate_min)}
+                        </p>
                       </div>
                     )}
-                  </Link>
-                </li>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
+                    {(prof.location_city || prof.location_province || prof.location_region) && (
+                      <span className="flex items-center gap-1">
+                        <MapPin className="h-3 w-3" />
+                        {formatSpanishLocation({
+                          city: prof.location_city,
+                          province: prof.location_province,
+                          autonomousCommunity: prof.location_region,
+                        })}
+                      </span>
+                    )}
+                    {prof.years_experience != null && prof.years_experience > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {prof.years_experience} años de experiencia
+                      </span>
+                    )}
+                    {prof.avg_rating > 0 && (
+                      <span className="flex items-center gap-1 text-primary">
+                        <Star className="h-3 w-3 fill-current" />
+                        {prof.avg_rating}
+                      </span>
+                    )}
+                  </div>
+                </Link>
               ))}
-            </ul>
+            </div>
           ) : (
-            <div className="border border-dashed border-border px-6 py-16 text-center">
+            <div className="rounded-xl border border-dashed border-border p-12 text-center">
               <p className="text-muted-foreground">
                 {hasFilters
                   ? "Ningún profesional coincide con estos filtros."
                   : "Aún no hay profesionales publicados en la plataforma."}
               </p>
-              <p className="mt-2 text-sm text-muted-foreground">
-                {hasFilters
-                  ? "Prueba con otra ciudad, categoría o término de búsqueda."
-                  : "Sé de los primeros en crear un perfil y aparecer aquí."}
-              </p>
-              <Link
-                href="/?auth=register&tipo=professional"
-                className="mt-6 inline-flex items-center rounded-md bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-[filter] hover:brightness-105"
-              >
-                Crear perfil profesional
-              </Link>
+              {hasFilters ? (
+                <Link href="/profesionales" className="mt-4 inline-block text-sm text-primary hover:underline">
+                  Quitar filtros
+                </Link>
+              ) : (
+                <Link
+                  href="/?auth=register&tipo=professional"
+                  className="mt-4 inline-block text-sm text-primary hover:underline"
+                >
+                  Sé de los primeros en crear un perfil →
+                </Link>
+              )}
             </div>
           )}
         </div>
