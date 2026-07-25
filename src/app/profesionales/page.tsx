@@ -9,6 +9,17 @@ interface SearchParams {
   q?: string;
 }
 
+interface ProfessionalListItem {
+  id: string;
+  display_name: string;
+  headline: string | null;
+  location_city: string | null;
+  years_experience: number | null;
+  hourly_rate_min: number | null;
+  avg_rating: number;
+  review_count: number;
+}
+
 export default async function ProfessionalsPage({
   searchParams,
 }: {
@@ -18,22 +29,77 @@ export default async function ProfessionalsPage({
   const supabase = await createClient();
 
   let categoryId: string | undefined;
-  if (params.categoria) {
+  if (params.categoria?.trim()) {
     const { data: cat } = await supabase
       .from("categories")
       .select("id")
-      .eq("slug", params.categoria)
+      .eq("slug", params.categoria.trim())
       .single();
     categoryId = cat?.id;
   }
 
-  const { data: professionals } = await supabase.rpc("search_professionals", {
-    p_query: params.q ?? null,
-    p_category_id: categoryId ?? null,
-    p_city: params.ciudad ?? null,
-    p_limit: 24,
-    p_offset: 0,
-  });
+  let professionals: ProfessionalListItem[] = [];
+
+  let categoryProfessionalIds: string[] | null = null;
+  if (categoryId) {
+    const { data: categoryLinks } = await supabase
+      .from("professional_categories")
+      .select("professional_id")
+      .eq("category_id", categoryId);
+
+    categoryProfessionalIds = (categoryLinks ?? []).map((row) => row.professional_id);
+    if (categoryProfessionalIds.length === 0) {
+      professionals = [];
+    }
+  }
+
+  if (!categoryId || (categoryProfessionalIds && categoryProfessionalIds.length > 0)) {
+    let query = supabase
+      .from("professional_profiles")
+      .select(`
+        id,
+        headline,
+        location_city,
+        years_experience,
+        hourly_rate_min,
+        profiles!inner (
+          display_name,
+          is_active
+        )
+      `)
+      .eq("profiles.is_active", true);
+
+    if (categoryProfessionalIds) {
+      query = query.in("id", categoryProfessionalIds);
+    }
+
+    if (params.ciudad?.trim()) {
+      query = query.ilike("location_city", `%${params.ciudad.trim()}%`);
+    }
+
+    if (params.q?.trim()) {
+      const term = params.q.trim();
+      query = query.or(`headline.ilike.%${term}%,profiles.display_name.ilike.%${term}%`);
+    }
+
+    const { data, error } = await query.limit(24);
+
+    if (!error && data) {
+      professionals = data.map((row) => {
+        const profile = row.profiles as unknown as { display_name: string };
+        return {
+          id: row.id,
+          display_name: profile.display_name,
+          headline: row.headline,
+          location_city: row.location_city,
+          years_experience: row.years_experience,
+          hourly_rate_min: row.hourly_rate_min,
+          avg_rating: 0,
+          review_count: 0,
+        };
+      });
+    }
+  }
 
   const hasFilters = Boolean(params.q || params.ciudad || params.categoria);
 
@@ -65,18 +131,9 @@ export default async function ProfessionalsPage({
         </aside>
 
         <div className="flex-1">
-          {professionals && professionals.length > 0 ? (
+          {professionals.length > 0 ? (
             <ul className="divide-y divide-border">
-              {professionals.map((prof: {
-                id: string;
-                display_name: string;
-                headline: string | null;
-                location_city: string | null;
-                years_experience: number | null;
-                hourly_rate_min: number | null;
-                avg_rating: number;
-                review_count: number;
-              }) => (
+              {professionals.map((prof) => (
                 <li key={prof.id}>
                   <Link
                     href={`/profesionales/${prof.id}`}
