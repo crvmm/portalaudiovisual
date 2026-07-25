@@ -12,7 +12,6 @@ import {
   getMonthWeekends,
   type PaintStatus,
 } from "@/components/calendar/availability-calendar";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   AVAILABILITY_STATUS_LABELS,
@@ -222,47 +221,45 @@ export function AvailabilityEditor() {
           </button>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
-          <p className="mr-1 text-[11px] text-muted-foreground">
-            <span className="font-medium text-foreground">{statusLabel}</span>
+        <div className="mt-3 border-t border-border pt-3">
+          <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Relleno rápido
+          </p>
+          <p className="mt-1 text-[11px] text-muted-foreground">
+            Aplica <span className="font-medium text-foreground">{statusLabel}</span>
             {" · "}
             <span className="capitalize">{monthLabel}</span>
           </p>
-          <Button
-            type="button"
-            size="sm"
-            className="h-7 px-2.5 text-[11px]"
-            onClick={() => paintDays(getMonthWeekdays(month), paintStatus)}
-          >
-            Laborables
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 px-2.5 text-[11px]"
-            onClick={() => paintDays(getMonthWeekends(month), paintStatus)}
-          >
-            Fines de semana
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            className="h-7 px-2.5 text-[11px]"
-            onClick={() => paintDays(getMonthAllDays(month), paintStatus)}
-          >
-            Todo el mes
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            className="h-7 px-2.5 text-[11px]"
-            onClick={() => paintDays(getMonthAllDays(month), "clear")}
-          >
-            Limpiar
-          </Button>
+          <div className="mt-2 flex flex-wrap gap-1">
+            <button
+              type="button"
+              onClick={() => paintDays(getMonthWeekdays(month), paintStatus)}
+              className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:text-foreground"
+            >
+              Laborables
+            </button>
+            <button
+              type="button"
+              onClick={() => paintDays(getMonthWeekends(month), paintStatus)}
+              className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:text-foreground"
+            >
+              Fines de semana
+            </button>
+            <button
+              type="button"
+              onClick={() => paintDays(getMonthAllDays(month), paintStatus)}
+              className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:text-foreground"
+            >
+              Todo el mes
+            </button>
+            <button
+              type="button"
+              onClick={() => paintDays(getMonthAllDays(month), "clear")}
+              className="inline-flex items-center rounded-md border border-border bg-background px-2 py-1.5 text-[11px] font-medium text-muted-foreground transition-colors duration-150 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:text-foreground"
+            >
+              Limpiar
+            </button>
+          </div>
         </div>
       </section>
 
