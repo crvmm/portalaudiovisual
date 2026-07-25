@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MapPin, Star, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ProfessionalsFilterForm } from "@/components/professionals/professionals-filter-form";
-import { EXPERIENCE_LEVEL_LABELS, type ExperienceLevel } from "@/types";
+import { EXPERIENCE_LEVEL_LABELS, JOB_SEEKING_LABELS, type ExperienceLevel, type JobSeekingType } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 import { formatSpanishLocation } from "@/lib/spain-territories";
 
@@ -25,6 +25,8 @@ interface ProfessionalListItem {
   experience_level: string | null;
   hourly_rate_min: number | null;
   is_available: boolean;
+  specialties: string[];
+  seeking_types: JobSeekingType[];
   avg_rating: number;
   review_count: number;
 }
@@ -76,6 +78,12 @@ export default async function ProfessionalsPage({
         experience_level,
         hourly_rate_min,
         is_available,
+        professional_categories (
+          categories (name)
+        ),
+        professional_job_seeking (
+          seeking_type
+        ),
         profiles!inner (
           display_name,
           is_active
@@ -101,6 +109,13 @@ export default async function ProfessionalsPage({
     if (!error && data) {
       professionals = data.map((row) => {
         const profile = row.profiles as unknown as { display_name: string };
+        const categoryRows = row.professional_categories as unknown as {
+          categories: { name: string } | null;
+        }[];
+        const seekingRows = row.professional_job_seeking as unknown as {
+          seeking_type: JobSeekingType;
+        }[];
+
         return {
           id: row.id,
           display_name: profile.display_name,
@@ -113,6 +128,10 @@ export default async function ProfessionalsPage({
           experience_level: row.experience_level,
           hourly_rate_min: row.hourly_rate_min,
           is_available: row.is_available,
+          specialties: categoryRows
+            .map((item) => item.categories?.name)
+            .filter((name): name is string => Boolean(name)),
+          seeking_types: seekingRows.map((item) => item.seeking_type),
           avg_rating: 0,
           review_count: 0,
         };
@@ -187,6 +206,25 @@ export default async function ProfessionalsPage({
                         <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
                           {prof.headline ?? prof.bio}
                         </p>
+                      )}
+                      {prof.specialties.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {prof.specialties.map((name) => (
+                            <Badge key={name} variant="primary">
+                              {name}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                      {prof.seeking_types.length > 0 && (
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-medium text-muted-foreground">Busca:</span>
+                          {prof.seeking_types.map((type) => (
+                            <Badge key={type} variant="muted">
+                              {JOB_SEEKING_LABELS[type]}
+                            </Badge>
+                          ))}
+                        </div>
                       )}
                     </div>
                     {prof.hourly_rate_min && (
