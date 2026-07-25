@@ -1,18 +1,23 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapPin, Clock, MessageSquare, Check } from "lucide-react";
+import { MapPin, Clock, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { AvailabilityCalendar } from "@/components/calendar/availability-calendar";
+import { RequestServiceButton } from "@/components/services/request-service-button";
+import {
+  ServiceOwnerRequestsPanel,
+  type ServiceRequestListItem,
+} from "@/components/services/service-owner-requests-panel";
 import {
   WORK_MODALITY_LABELS,
   PRICING_TYPE_LABELS,
   type WorkModality,
   type PricingType,
+  type ServiceRequestStatus,
 } from "@/types";
 import { formatCurrency } from "@/lib/utils";
 
@@ -23,17 +28,20 @@ export default async function ServiceDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: service } = await supabase
     .from("services")
     .select(`
       *,
       categories:category_id (name, slug),
-      professional_profiles:professional_id (
+      professional_profiles!professional_id (
         id,
         location_city,
         is_available,
-        profiles:id (display_name, avatar_url)
+        profiles!professional_profiles_id_fkey (display_name, avatar_url)
       )
     `)
     .eq("id", id)
@@ -55,6 +63,41 @@ export default async function ServiceDetailPage({
   };
 
   const category = service.categories as unknown as { name: string; slug: string } | null;
+  const isOwner = Boolean(user && user.id === prof.id);
+
+  let ownerRequests: ServiceRequestListItem[] = [];
+  if (isOwner) {
+    const { data: requests } = await supabase
+      .from("service_requests")
+      .select(
+        `
+        id,
+        conversation_id,
+        status,
+        date_start,
+        date_end,
+        profiles:requester_id (id, display_name, avatar_url)
+      `
+      )
+      .eq("service_id", id)
+      .order("created_at", { ascending: false });
+
+    ownerRequests = (requests ?? []).map((row) => {
+      const requester = row.profiles as unknown as {
+        id: string;
+        display_name: string;
+        avatar_url: string | null;
+      };
+      return {
+        id: row.id,
+        conversation_id: row.conversation_id,
+        status: row.status as ServiceRequestStatus,
+        date_start: row.date_start,
+        date_end: row.date_end,
+        requester,
+      };
+    });
+  }
 
   const { data: availability } = await supabase
     .from("availability_slots")
@@ -178,14 +221,17 @@ export default async function ServiceDetailPage({
                 </p>
               </div>
 
-              <div className="mt-6 space-y-3">
-                <Link href={`/mensajes?servicio=${id}&contactar=${prof.id}`}>
-                  <Button className="w-full">
-                    <MessageSquare className="h-4 w-4" />
-                    Solicitar presupuesto
-                  </Button>
-                </Link>
-              </div>
+              {isOwner ? (
+                <ServiceOwnerRequestsPanel serviceId={id} requests={ownerRequests} />
+              ) : (
+                <div className="mt-6 space-y-3">
+                  <RequestServiceButton
+                    serviceId={id}
+                    serviceTitle={service.title}
+                    professionalId={prof.id}
+                  />
+                </div>
+              )}
             </CardContent>
           </Card>
 

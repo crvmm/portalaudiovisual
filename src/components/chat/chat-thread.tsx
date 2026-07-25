@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Send, Paperclip, Briefcase } from "lucide-react";
-import { useMessages, sendMessage } from "@/hooks/use-messages";
+import { Send, Paperclip, Briefcase, Clapperboard } from "lucide-react";
+import { useMessages, sendMessage, markConversationRead } from "@/hooks/use-messages";
 import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { formatTime } from "@/lib/utils";
@@ -16,6 +16,8 @@ interface ChatThreadProps {
   participants: { id: string; display_name: string; avatar_url: string | null }[];
   jobPostingId?: string | null;
   jobTitle?: string | null;
+  serviceId?: string | null;
+  onMessageSent?: () => void;
 }
 
 export function ChatThread({
@@ -24,6 +26,8 @@ export function ChatThread({
   participants,
   jobPostingId,
   jobTitle,
+  serviceId,
+  onMessageSent,
 }: ChatThreadProps) {
   const { messages, loading } = useMessages(conversationId);
   const [text, setText] = useState("");
@@ -41,6 +45,13 @@ export function ChatThread({
     container.scrollTop = container.scrollHeight;
   }, [messages]);
 
+  useEffect(() => {
+    if (messages.length === 0) return;
+
+    const latestMessageAt = messages[messages.length - 1]?.created_at ?? null;
+    void markConversationRead(conversationId, currentUserId, latestMessageAt);
+  }, [conversationId, currentUserId, messages]);
+
   async function handleSend(e: React.FormEvent) {
     e.preventDefault();
     if (!text.trim() || sending) return;
@@ -49,6 +60,7 @@ export function ChatThread({
     await sendMessage(conversationId, currentUserId, text.trim());
     setText("");
     setSending(false);
+    onMessageSent?.();
 
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -68,15 +80,16 @@ export function ChatThread({
 
     if (uploadError) return;
 
-    const { data: { publicUrl } } = supabase.storage
-      .from("chat-attachments")
-      .getPublicUrl(path);
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("chat-attachments").getPublicUrl(path);
 
     await sendMessage(conversationId, currentUserId, "", {
       url: publicUrl,
       type: file.type,
       name: file.name,
     });
+    onMessageSent?.();
   }
 
   if (loading) {
@@ -89,7 +102,6 @@ export function ChatThread({
 
   return (
     <div className="flex flex-1 flex-col">
-      {/* Header */}
       {otherParticipant && (
         <div className="border-b border-border px-4 py-3">
           <div className="flex items-center gap-3">
@@ -108,13 +120,24 @@ export function ChatThread({
               {jobTitle ? `Oferta: ${jobTitle}` : "Ver oferta relacionada"}
             </Link>
           )}
+          {serviceId && (
+            <Link
+              href={`/servicios/${serviceId}`}
+              className="mt-2 inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+            >
+              <Clapperboard className="h-3.5 w-3.5" />
+              Ver servicio relacionado
+            </Link>
+          )}
         </div>
       )}
 
-      {/* Messages */}
-      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto overscroll-y-contain p-4 space-y-3">
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 space-y-3 overflow-y-auto overscroll-y-contain p-4"
+      >
         {messages.length === 0 && (
-          <p className="text-center text-sm text-muted-foreground py-8">
+          <p className="py-8 text-center text-sm text-muted-foreground">
             No hay mensajes todavía. ¡Empieza la conversación!
           </p>
         )}
@@ -130,8 +153,7 @@ export function ChatThread({
         ))}
       </div>
 
-      {/* Input */}
-      <form onSubmit={handleSend} className="border-t border-border p-4 flex gap-2">
+      <form onSubmit={handleSend} className="flex gap-2 border-t border-border p-4">
         <label className="cursor-pointer rounded-lg p-2.5 text-muted-foreground hover:bg-accent">
           <input type="file" className="hidden" onChange={handleFileUpload} />
           <Paperclip className="h-5 w-5" />
@@ -165,12 +187,12 @@ function MessageBubble({
       <div
         className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${
           isOwn
-            ? "bg-primary text-primary-foreground rounded-br-md"
-            : "bg-secondary rounded-bl-md"
+            ? "rounded-br-md bg-primary text-primary-foreground"
+            : "rounded-bl-md bg-secondary"
         }`}
       >
         {!isOwn && message.is_system === false && (
-          <p className="text-xs font-medium mb-1 opacity-70">{senderName}</p>
+          <p className="mb-1 text-xs font-medium opacity-70">{senderName}</p>
         )}
         {message.content && <p className="whitespace-pre-wrap">{message.content}</p>}
         {message.attachment_url && (
@@ -193,7 +215,11 @@ function MessageBubble({
             {message.link_url}
           </a>
         )}
-        <p className={`mt-1 text-[10px] ${isOwn ? "text-primary-foreground/60" : "text-muted-foreground"}`}>
+        <p
+          className={`mt-1 text-[10px] ${
+            isOwn ? "text-primary-foreground/60" : "text-muted-foreground"
+          }`}
+        >
           {formatTime(message.created_at)}
         </p>
       </div>

@@ -1,6 +1,11 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { applyLocalRead } from "@/lib/unread-read-state";
+import { markConversationRead } from "@/lib/mark-conversation-read";
+import { requestUnreadRefresh } from "@/hooks/use-unread-messages";
 import type { Message } from "@/types";
+
+export { markConversationRead } from "@/lib/mark-conversation-read";
 
 export function useMessages(conversationId: string | null) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -80,10 +85,29 @@ export async function sendMessage(
     .select()
     .single();
 
+  if (data?.created_at) {
+    applyLocalRead(senderId, conversationId, data.created_at);
+    requestUnreadRefresh();
+  }
+
   await supabase
     .from("conversations")
     .update({ updated_at: new Date().toISOString() })
     .eq("id", conversationId);
+
+  if (data?.created_at) {
+    await markConversationRead(conversationId, senderId, data.created_at);
+  } else {
+    requestUnreadRefresh();
+  }
+
+  // Advance service request funnel when the professional replies for the first time
+  await supabase
+    .from("service_requests")
+    .update({ status: "in_conversation" })
+    .eq("conversation_id", conversationId)
+    .eq("status", "new")
+    .neq("requester_id", senderId);
 
   return { data, error };
 }

@@ -8,6 +8,7 @@ import {
   Settings,
   Bell,
   Plus,
+  Wrench,
 } from "lucide-react";
 import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeholder";
 import type { ProfileType } from "@/types";
@@ -27,11 +28,18 @@ const DASHBOARD_LINKS: {
     profileTypes: ["professional", "company", "individual"],
   },
   {
+    href: "/dashboard/servicios",
+    label: "Mis servicios",
+    icon: Wrench,
+    description: "Publica y gestiona lo que ofreces",
+    profileTypes: ["professional"],
+  },
+  {
     href: "/dashboard/ofertas",
     label: "Mis ofertas",
     icon: Briefcase,
     description: "Gestiona publicaciones y candidaturas",
-    profileTypes: ["professional", "company"],
+    profileTypes: ["company", "individual"],
   },
   {
     href: "/dashboard/calendario",
@@ -94,11 +102,11 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link
-          href="/publicar"
+          href={profileType === "professional" ? "/dashboard/servicios/nuevo" : "/publicar"}
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
           <Plus className="h-4 w-4" />
-          Publicar
+          {profileType === "professional" ? "Publicar servicio" : "Publicar oferta"}
         </Link>
       </div>
 

@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { HeaderAuth } from "@/components/layout/header-auth";
 import { BrandLogo } from "@/components/layout/brand-logo";
+import { MessagesNavLink } from "@/components/layout/messages-nav-link";
 
 const navItems = [
   { href: "/profesionales", label: "Profesionales" },
   { href: "/ofertas", label: "Ofertas" },
   { href: "/servicios", label: "Servicios" },
-  { href: "/mensajes", label: "Mensajes" },
-];
+] as const;
 
 export function Header() {
   return (
@@ -25,6 +25,7 @@ export function Header() {
               {label}
             </Link>
           ))}
+          <MessagesNavLink className="rounded-md px-3.5 py-2 text-[0.9375rem] text-muted-foreground transition-[color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-accent hover:text-foreground" />
         </nav>
 
         <HeaderAuth />

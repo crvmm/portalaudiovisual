@@ -141,12 +141,30 @@ export default async function ProfessionalsPage({
 
   const hasFilters = Boolean(params.q || params.ciudad || params.categoria);
 
-  const { data: categories } = await supabase
-    .from("categories")
-    .select("id, name, slug, parent_id")
-    .eq("status", "active")
-    .is("parent_id", null)
-    .order("sort_order");
+  const [
+    { data: categories },
+    {
+      data: { user },
+    },
+  ] = await Promise.all([
+    supabase
+      .from("categories")
+      .select("id, name, slug, parent_id")
+      .eq("status", "active")
+      .is("parent_id", null)
+      .order("sort_order"),
+    supabase.auth.getUser(),
+  ]);
+
+  let isProfessional = false;
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("profile_type")
+      .eq("id", user.id)
+      .single();
+    isProfessional = profile?.profile_type === "professional";
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
@@ -157,12 +175,21 @@ export default async function ProfessionalsPage({
             Talento por especialidad, ciudad y disponibilidad
           </p>
         </div>
-        <Link
-          href="/?auth=register&tipo=professional"
-          className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
-        >
-          Crear perfil profesional
-        </Link>
+        {isProfessional ? (
+          <Link
+            href="/dashboard/perfil"
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+          >
+            Editar mi perfil
+          </Link>
+        ) : !user ? (
+          <Link
+            href="/?auth=register&tipo=professional"
+            className="rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground"
+          >
+            Crear perfil profesional
+          </Link>
+        ) : null}
       </div>
 
       <div className="mt-10 flex flex-col gap-10 lg:flex-row">

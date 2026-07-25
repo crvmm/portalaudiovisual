@@ -47,6 +47,12 @@ export type ApplicationStatus =
   | "rejected"
   | "withdrawn";
 
+export type ServiceRequestStatus =
+  | "new"
+  | "in_conversation"
+  | "reserved"
+  | "discarded";
+
 export type ExperienceLevel = "junior" | "mid" | "senior" | "expert";
 
 export interface Profile {
@@ -123,6 +129,27 @@ export interface Service {
   location_city: string | null;
   is_active: boolean;
 }
+
+export interface ServiceRequest {
+  id: string;
+  service_id: string;
+  requester_id: string;
+  conversation_id: string | null;
+  status: ServiceRequestStatus;
+  date_start: string;
+  date_end: string | null;
+  location: string | null;
+  comments: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export const SERVICE_REQUEST_STATUS_LABELS: Record<ServiceRequestStatus, string> = {
+  new: "Nueva",
+  in_conversation: "En conversación",
+  reserved: "Reservada",
+  discarded: "Descartada",
+};
 
 export interface JobPosting {
   id: string;
