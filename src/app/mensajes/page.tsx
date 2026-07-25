@@ -186,6 +186,7 @@ function MessagesContent() {
               serviceId: servicio,
             });
             router.replace(`/mensajes?conversacion=${convId}`);
+            window.scrollTo({ top: 0, left: 0, behavior: "auto" });
           }
         }
       }
@@ -202,6 +203,10 @@ function MessagesContent() {
       setActiveId(conversacion);
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [activeId]);
 
   useEffect(() => {
     if (!activeId) return;
@@ -263,10 +268,10 @@ function MessagesContent() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      <h1 className="text-2xl font-bold mb-6">Mensajes</h1>
+    <div className="mx-auto flex max-w-7xl flex-col px-4 py-6 sm:px-6 lg:h-[calc(100dvh-5.5rem)]">
+      <h1 className="mb-4 shrink-0 text-2xl font-bold">Mensajes</h1>
 
-      <div className="flex h-[calc(100vh-12rem)] rounded-xl border border-border overflow-hidden">
+      <div className="flex min-h-0 flex-1 overflow-hidden rounded-xl border border-border">
         {/* Conversation list */}
         <div className="w-full sm:w-80 border-r border-border overflow-y-auto shrink-0">
           {conversations.length === 0 ? (
@@ -287,6 +292,7 @@ function MessagesContent() {
                     serviceId: conv.service_id,
                   });
                   router.push(`/mensajes?conversacion=${conv.id}`);
+                  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
                 }}
                 className={`w-full flex items-center gap-3 p-4 text-left transition-colors hover:bg-accent/50 ${
                   activeId === conv.id ? "bg-accent" : ""

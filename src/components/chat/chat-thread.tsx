@@ -28,12 +28,17 @@ export function ChatThread({
   const { messages, loading } = useMessages(conversationId);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const otherParticipant = participants.find((p) => p.id !== currentUserId);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messages.length === 0) return;
+
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTop = container.scrollHeight;
   }, [messages]);
 
   async function handleSend(e: React.FormEvent) {
@@ -44,6 +49,10 @@ export function ChatThread({
     await sendMessage(conversationId, currentUserId, text.trim());
     setText("");
     setSending(false);
+
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
   }
 
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -103,7 +112,7 @@ export function ChatThread({
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto overscroll-y-contain p-4 space-y-3">
         {messages.length === 0 && (
           <p className="text-center text-sm text-muted-foreground py-8">
             No hay mensajes todavía. ¡Empieza la conversación!
@@ -119,7 +128,6 @@ export function ChatThread({
             }
           />
         ))}
-        <div ref={bottomRef} />
       </div>
 
       {/* Input */}
