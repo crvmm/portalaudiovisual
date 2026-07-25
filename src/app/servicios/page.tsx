@@ -82,27 +82,30 @@ export default async function ServicesPage() {
               <Link
                 key={service.id}
                 href={`/servicios/${service.id}`}
-                className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/50"
+                className="group flex flex-col rounded-md border border-border bg-card p-5 transition-[border-color,background-color] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:bg-surface"
               >
                 {category && (
-                  <span className="text-xs font-medium text-primary">
+                  <span className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-stage">
                     {category.name}
                   </span>
                 )}
-                <h2 className="mt-1 font-semibold">{service.title}</h2>
-                <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+                <h2 className="mt-1.5 text-base font-semibold tracking-tight group-hover:text-primary">
+                  {service.title}
+                </h2>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground line-clamp-2">
                   {service.description}
                 </p>
-                <div className="mt-4 flex items-center justify-between">
+                <div className="mt-4 flex items-end justify-between gap-3 border-t border-border pt-3">
                   <div>
                     {service.price_amount ? (
-                      <span className="font-semibold">
+                      <span className="text-lg font-semibold tabular-nums text-primary">
                         {formatCurrency(service.price_amount, service.currency)}
                       </span>
                     ) : service.price_min ? (
-                      <span className="text-sm">
+                      <span className="text-sm font-semibold tabular-nums">
                         {formatCurrency(service.price_min, service.currency)}
-                        {service.price_max && ` — ${formatCurrency(service.price_max, service.currency)}`}
+                        {service.price_max &&
+                          ` – ${formatCurrency(service.price_max, service.currency)}`}
                       </span>
                     ) : (
                       <span className="text-sm text-muted-foreground">
@@ -110,24 +113,24 @@ export default async function ServicesPage() {
                       </span>
                     )}
                   </div>
+                  <span className="text-xs text-muted-foreground">
+                    {WORK_MODALITY_LABELS[service.work_modality as WorkModality]}
+                  </span>
                 </div>
-                <div className="mt-3 flex flex-wrap gap-3 text-xs text-muted-foreground">
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
                   <span>{prof?.profiles?.display_name}</span>
                   {prof?.location_city && (
-                    <span className="flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1">
                       <MapPin className="h-3 w-3" />
                       {prof.location_city}
                     </span>
                   )}
                   {service.estimated_duration && (
-                    <span className="flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1">
                       <Clock className="h-3 w-3" />
                       {service.estimated_duration}
                     </span>
                   )}
-                  <span>
-                    {WORK_MODALITY_LABELS[service.work_modality as WorkModality]}
-                  </span>
                 </div>
               </Link>
             );

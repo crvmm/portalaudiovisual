@@ -12,56 +12,12 @@ import {
   getOrCreateConversation,
   sendMessage,
 } from "@/hooks/use-messages";
+import { buildServiceRequestMessagePayload } from "@/lib/service-request-message";
 
 interface RequestServiceButtonProps {
   serviceId: string;
   serviceTitle: string;
   professionalId: string;
-}
-
-function formatIsoDateLabel(isoDate: string): string {
-  const [year, month, day] = isoDate.split("-").map(Number);
-  if (!year || !month || !day) return isoDate;
-  return new Intl.DateTimeFormat("es-ES", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(year, month - 1, day));
-}
-
-function buildRequestMessage({
-  serviceTitle,
-  dateStart,
-  dateEnd,
-  location,
-  comments,
-}: {
-  serviceTitle: string;
-  dateStart: string;
-  dateEnd: string;
-  location: string;
-  comments: string;
-}): string {
-  const dates =
-    dateEnd && dateEnd !== dateStart
-      ? `${formatIsoDateLabel(dateStart)} — ${formatIsoDateLabel(dateEnd)}`
-      : formatIsoDateLabel(dateStart);
-
-  const lines = [
-    `Solicitud de servicio: ${serviceTitle}`,
-    "",
-    `Fechas de interés: ${dates}`,
-  ];
-
-  if (location.trim()) {
-    lines.push(`Ubicación: ${location.trim()}`);
-  }
-
-  if (comments.trim()) {
-    lines.push("", "Comentarios:", comments.trim());
-  }
-
-  return lines.join("\n");
 }
 
 export function RequestServiceButton({
@@ -234,7 +190,7 @@ export function RequestServiceButton({
       }
     }
 
-    const content = buildRequestMessage({
+    const content = buildServiceRequestMessagePayload({
       serviceTitle,
       dateStart,
       dateEnd,

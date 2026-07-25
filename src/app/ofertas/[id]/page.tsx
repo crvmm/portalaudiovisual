@@ -12,7 +12,6 @@ import {
 import { createClient } from "@/lib/supabase/server";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { MatchScoreCard } from "@/components/matching/match-score-card";
 import { ApplicationForm } from "@/components/applications/application-form";
@@ -38,7 +37,9 @@ export default async function JobDetailPage({
 }) {
   const { id } = await params;
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const { data: posting } = await supabase
     .from("job_postings")
@@ -107,6 +108,60 @@ export default async function JobDetailPage({
 
   const isAuthor = user?.id === posting.author_id;
 
+  const locationLabel = formatSpanishLocation({
+    city: posting.location_city,
+    province: posting.location_province,
+    autonomousCommunity: posting.location_region,
+  });
+
+  const facts = [
+    locationLabel ? { label: "Ubicación", value: locationLabel, icon: "map" as const } : null,
+    posting.project_start_date || posting.project_end_date
+      ? {
+          label: "Fechas",
+          value: [
+            posting.project_start_date && formatDate(posting.project_start_date),
+            posting.project_end_date && formatDate(posting.project_end_date),
+          ]
+            .filter(Boolean)
+            .join(" – "),
+          icon: "calendar" as const,
+        }
+      : null,
+    posting.schedule
+      ? { label: "Horario", value: posting.schedule, icon: "clock" as const }
+      : null,
+    posting.duration
+      ? { label: "Duración", value: posting.duration, icon: "briefcase" as const }
+      : null,
+    {
+      label: "Plazas",
+      value: String(posting.positions_count),
+      icon: "users" as const,
+    },
+  ].filter(Boolean) as {
+    label: string;
+    value: string;
+    icon: "map" | "calendar" | "clock" | "briefcase" | "users";
+  }[];
+
+  const compensation =
+    posting.budget_max || posting.salary_max
+      ? {
+          max: formatCurrency(
+            (posting.budget_max || posting.salary_max)!,
+            posting.currency
+          ),
+          min:
+            posting.budget_min || posting.salary_min
+              ? formatCurrency(
+                  (posting.budget_min || posting.salary_min)!,
+                  posting.currency
+                )
+              : null,
+        }
+      : null;
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <Breadcrumbs
@@ -116,10 +171,10 @@ export default async function JobDetailPage({
         ]}
       />
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
-          <div>
-            <div className="flex flex-wrap gap-2">
+      <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <div className="min-w-0 space-y-8">
+          <header>
+            <div className="flex flex-wrap items-center gap-2">
               <Badge variant="signal">
                 {JOB_POSTING_TYPE_LABELS[posting.posting_type as JobPostingType]}
               </Badge>
@@ -143,228 +198,214 @@ export default async function JobDetailPage({
                 {posting.status === "open" ? "Abierta" : posting.status}
               </Badge>
             </div>
-            <h1 className="mt-4 text-2xl font-bold">{posting.title}</h1>
+
+            <h1 className="mt-4 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+              {posting.title}
+            </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               Publicada por{" "}
               <Link
                 href={getPublicProfileUrl(author.profile_type, author.id)}
-                className="text-primary hover:underline"
+                className="font-medium text-foreground hover:text-primary"
               >
                 {author.display_name}
               </Link>
-              {" · "}
+              <span className="text-border"> · </span>
               {formatDate(posting.created_at)}
             </p>
-          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Descripción</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                {posting.description}
-              </p>
-            </CardContent>
-          </Card>
+            {facts.length > 0 && (
+              <dl className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {facts.map((fact) => (
+                  <div key={fact.label} className="rounded-md bg-surface px-3.5 py-3">
+                    <dt className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-1 flex items-start gap-1.5 text-sm font-medium text-foreground">
+                      {fact.icon === "map" && (
+                        <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      {fact.icon === "calendar" && (
+                        <Calendar className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      {fact.icon === "clock" && (
+                        <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      {fact.icon === "briefcase" && (
+                        <Briefcase className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      {fact.icon === "users" && (
+                        <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      )}
+                      <span>{fact.value}</span>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </header>
+
+          <section>
+            <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+              Descripción
+            </h2>
+            <p className="mt-3 max-w-prose whitespace-pre-wrap text-base leading-relaxed text-foreground">
+              {posting.description}
+            </p>
+          </section>
 
           {categories && categories.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Categorías requeridas</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((c) => {
-                    const cat = c.categories as unknown as { id: string; name: string };
+            <section>
+              <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+                Perfil buscado
+              </h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {categories.map((c) => {
+                  const cat = c.categories as unknown as { id: string; name: string };
+                  return (
+                    <Badge key={cat.id} variant="primary">
+                      {cat.name}
+                    </Badge>
+                  );
+                })}
+              </div>
+              {specialties && specialties.length > 0 && (
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {specialties.map((s) => {
+                    const spec = s.specialties as unknown as { id: string; name: string };
                     return (
-                      <Badge key={cat.id} variant="primary">
-                        {cat.name}
+                      <Badge key={spec.id} variant="muted">
+                        {spec.name}
                       </Badge>
                     );
                   })}
                 </div>
-                {specialties && specialties.length > 0 && (
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {specialties.map((s) => {
-                      const spec = s.specialties as unknown as { id: string; name: string };
-                      return (
-                        <Badge key={spec.id} variant="muted">
-                          {spec.name}
-                        </Badge>
-                      );
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+              )}
+              {posting.experience_required && (
+                <p className="mt-3 text-sm text-foreground">
+                  <span className="text-muted-foreground">Experiencia: </span>
+                  {
+                    EXPERIENCE_LEVEL_LABELS[
+                      posting.experience_required as ExperienceLevel
+                    ]
+                  }
+                </p>
+              )}
+            </section>
           )}
 
-          {(tools?.length || equipment?.length || languages?.length) ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Requisitos</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                {tools && tools.length > 0 && (
-                  <div>
-                    <p className="mb-2 font-medium flex items-center gap-2">
-                      <Wrench className="h-4 w-4" /> Herramientas
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {tools.map((t, i) => (
-                        <Badge key={i} variant="muted">
-                          {(t.tools as unknown as { name: string }).name}
-                        </Badge>
-                      ))}
-                    </div>
+          {(tools?.length || equipment?.length || languages?.length || posting.requires_own_equipment || posting.requires_vehicle) ? (
+            <section className="divide-y divide-border border-y border-border">
+              {tools && tools.length > 0 && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="flex items-center gap-1.5 font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    <Wrench className="h-3.5 w-3.5" />
+                    Herramientas
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {tools.map((t, i) => (
+                      <Badge key={i} variant="muted">
+                        {(t.tools as unknown as { name: string }).name}
+                      </Badge>
+                    ))}
                   </div>
-                )}
-                {equipment && equipment.length > 0 && (
-                  <div>
-                    <p className="mb-2 font-medium">Equipo necesario</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {equipment.map((e, i) => (
-                        <Badge key={i} variant="muted">
-                          {(e.equipment as unknown as { name: string }).name}
-                        </Badge>
-                      ))}
-                    </div>
+                </div>
+              )}
+              {equipment && equipment.length > 0 && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    Equipo
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {equipment.map((e, i) => (
+                      <Badge key={i} variant="muted">
+                        {(e.equipment as unknown as { name: string }).name}
+                      </Badge>
+                    ))}
                   </div>
-                )}
-                {languages && languages.length > 0 && (
-                  <div>
-                    <p className="mb-2 font-medium">Idiomas</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {languages.map((l, i) => (
-                        <Badge key={i} variant="muted">
-                          {(l.languages as unknown as { name: string }).name}
-                        </Badge>
-                      ))}
-                    </div>
+                </div>
+              )}
+              {languages && languages.length > 0 && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    Idiomas
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {languages.map((l, i) => (
+                      <Badge key={i} variant="muted">
+                        {(l.languages as unknown as { name: string }).name}
+                      </Badge>
+                    ))}
                   </div>
-                )}
-                {posting.requires_own_equipment && (
-                  <p className="text-muted-foreground">Se requiere equipo propio</p>
-                )}
-                {posting.requires_vehicle && (
-                  <p className="text-muted-foreground">Se requiere vehículo propio</p>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+              )}
+              {(posting.requires_own_equipment || posting.requires_vehicle) && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    Otros
+                  </h3>
+                  <ul className="space-y-1 text-sm leading-5 text-foreground">
+                    {posting.requires_own_equipment && <li>Se requiere equipo propio</li>}
+                    {posting.requires_vehicle && <li>Se requiere vehículo propio</li>}
+                  </ul>
+                </div>
+              )}
+            </section>
           ) : null}
         </div>
 
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="space-y-4 pt-6 text-sm">
-              {(posting.location_city || posting.location_province || posting.location_region) && (
-                <div className="flex items-start gap-3">
-                  <MapPin className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Ubicación</p>
-                    <p className="text-muted-foreground">
-                      {formatSpanishLocation({
-                        city: posting.location_city,
-                        province: posting.location_province,
-                        autonomousCommunity: posting.location_region,
-                      })}
-                    </p>
-                  </div>
-                </div>
-              )}
-              {(posting.project_start_date || posting.project_end_date) && (
-                <div className="flex items-start gap-3">
-                  <Calendar className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Fechas del proyecto</p>
-                    <p className="text-muted-foreground">
-                      {posting.project_start_date && formatDate(posting.project_start_date)}
-                      {posting.project_end_date &&
-                        ` — ${formatDate(posting.project_end_date)}`}
-                    </p>
-                  </div>
-                </div>
-              )}
-              {posting.schedule && (
-                <div className="flex items-start gap-3">
-                  <Clock className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Horario</p>
-                    <p className="text-muted-foreground">{posting.schedule}</p>
-                  </div>
-                </div>
-              )}
-              {posting.duration && (
-                <div className="flex items-start gap-3">
-                  <Briefcase className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                  <div>
-                    <p className="font-medium">Duración</p>
-                    <p className="text-muted-foreground">{posting.duration}</p>
-                  </div>
-                </div>
-              )}
-              {posting.experience_required && (
-                <div>
-                  <p className="font-medium">Experiencia requerida</p>
-                  <p className="text-muted-foreground">
-                    {EXPERIENCE_LEVEL_LABELS[posting.experience_required as ExperienceLevel]}
+        <aside className="space-y-4 lg:sticky lg:top-24">
+          <div className="rounded-md border border-border bg-card p-5">
+            {compensation ? (
+              <>
+                <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  Compensación
+                </p>
+                <p className="mt-2 text-2xl font-semibold tracking-tight text-primary">
+                  hasta {compensation.max}
+                </p>
+                {compensation.min && (
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    desde {compensation.min}
                   </p>
-                </div>
-              )}
-              <div className="flex items-start gap-3">
-                <Users className="h-4 w-4 mt-0.5 text-muted-foreground" />
-                <div>
-                  <p className="font-medium">Plazas</p>
-                  <p className="text-muted-foreground">{posting.positions_count}</p>
-                </div>
-              </div>
-              {(posting.budget_max || posting.salary_max) && (
-                <div>
-                  <p className="font-medium">Compensación</p>
-                  <p className="text-lg font-semibold text-primary">
-                    {posting.budget_max
-                      ? `hasta ${formatCurrency(posting.budget_max, posting.currency)}`
-                      : posting.salary_max
-                        ? `hasta ${formatCurrency(posting.salary_max, posting.currency)}`
-                        : null}
-                  </p>
-                  {(posting.budget_min || posting.salary_min) && (
-                    <p className="text-xs text-muted-foreground">
-                      desde{" "}
-                      {formatCurrency(
-                        (posting.budget_min || posting.salary_min)!,
-                        posting.currency
-                      )}
-                    </p>
-                  )}
-                </div>
-              )}
-              {posting.application_deadline && (
-                <div>
-                  <p className="font-medium">Fecha límite</p>
-                  <p className="text-muted-foreground">
-                    {formatDate(posting.application_deadline)}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </>
+            ) : (
+              <>
+                <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  Compensación
+                </p>
+                <p className="mt-2 text-lg font-medium">A consultar</p>
+              </>
+            )}
 
-          {match && <MatchScoreCard match={match} />}
+            {posting.application_deadline && (
+              <p className="mt-4 border-t border-border pt-4 text-sm">
+                <span className="text-muted-foreground">Fecha límite: </span>
+                <span className="font-medium">
+                  {formatDate(posting.application_deadline)}
+                </span>
+              </p>
+            )}
 
-          {!isAuthor && posting.status === "open" && user && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Candidatura</CardTitle>
-              </CardHeader>
-              <CardContent>
+            {isAuthor && (
+              <Link href={`/dashboard/ofertas/${id}`} className="mt-5 block">
+                <Button variant="outline" className="w-full">
+                  Gestionar candidaturas
+                </Button>
+              </Link>
+            )}
+
+            {!isAuthor && posting.status === "open" && user && (
+              <div className="mt-5 border-t border-border pt-5">
                 {applications ? (
-                  <div className="text-center">
+                  <div>
                     <Badge variant="primary" className="mb-3">
-                      Candidatura enviada — {applications.status}
+                      Candidatura enviada: {applications.status}
                     </Badge>
-                    <Link href={`/mensajes?contactar=${posting.author_id}&oferta=${id}`}>
+                    <Link
+                      href={`/mensajes?contactar=${posting.author_id}&oferta=${id}`}
+                    >
                       <Button variant="outline" className="w-full">
                         <MessageSquare className="h-4 w-4" />
                         Enviar mensaje
@@ -374,31 +415,23 @@ export default async function JobDetailPage({
                 ) : (
                   <ApplicationForm jobPostingId={id} />
                 )}
-              </CardContent>
-            </Card>
-          )}
+              </div>
+            )}
 
-          {isAuthor && (
-            <Link href={`/dashboard/ofertas/${id}`}>
-              <Button variant="outline" className="w-full">
-                Gestionar candidaturas
-              </Button>
-            </Link>
-          )}
-
-          {!user && posting.status === "open" && (
-            <Card>
-              <CardContent className="pt-6 text-center">
-                <p className="text-sm text-muted-foreground mb-4">
+            {!user && posting.status === "open" && (
+              <div className="mt-5 border-t border-border pt-5">
+                <p className="mb-3 text-sm text-muted-foreground">
                   Inicia sesión para presentar tu candidatura
                 </p>
                 <Link href={authModalLoginUrl(`/ofertas/${id}`)}>
                   <Button className="w-full">Iniciar sesión</Button>
                 </Link>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              </div>
+            )}
+          </div>
+
+          {match && <MatchScoreCard match={match} />}
+        </aside>
       </div>
     </div>
   );

@@ -18,6 +18,7 @@ import {
   SERVICE_REQUEST_STATUS_LABELS,
   type ServiceRequestStatus,
 } from "@/types";
+import { serviceRequestPreviewText } from "@/lib/service-request-message";
 
 interface ConversationItem {
   id: string;
@@ -171,7 +172,7 @@ function MessagesContent() {
           job_posting_id: conv.job_posting_id,
           service_id: conv.service_id,
           otherParticipant: otherProfile,
-          lastMessage: lastMsg?.content ?? null,
+          lastMessage: serviceRequestPreviewText(lastMsg?.content) || null,
           requestId: requestMeta?.id ?? null,
           requestStatus: requestMeta?.status ?? null,
         });
@@ -436,38 +437,44 @@ function MessagesContent() {
   }
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col px-4 py-6 sm:px-6 lg:h-[calc(100dvh-5.5rem)]">
-      <div className="mb-4 shrink-0">
+    <div className="mx-auto flex h-[calc(100dvh-3.75rem)] max-w-7xl flex-col overflow-hidden px-4 py-4 sm:px-6">
+      <div className="mb-3 shrink-0">
         {serviceFilter ? (
           <div>
             <Link
               href={`/servicios/${serviceFilter.id}`}
-              className="mb-2 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+              className="mb-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground"
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
+              <ArrowLeft className="h-3 w-3" />
               Volver al servicio
             </Link>
-            <h1 className="text-2xl font-bold">Candidaturas</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{serviceFilter.title}</p>
-            {serviceFilter.isOwner && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {(Object.keys(SERVICE_REQUEST_STATUS_LABELS) as ServiceRequestStatus[]).map(
-                  (status) => (
-                    <Badge key={status} variant={statusBadgeVariant(status)}>
-                      {SERVICE_REQUEST_STATUS_LABELS[status]}: {statusCounts[status]}
-                    </Badge>
-                  )
-                )}
+            <div className="flex flex-wrap items-end justify-between gap-2">
+              <div className="min-w-0">
+                <h1 className="text-xl font-semibold tracking-tight">Candidaturas</h1>
+                <p className="truncate text-sm text-muted-foreground">
+                  {serviceFilter.title}
+                </p>
               </div>
-            )}
+              {serviceFilter.isOwner && (
+                <div className="flex flex-wrap gap-1.5">
+                  {(
+                    Object.keys(SERVICE_REQUEST_STATUS_LABELS) as ServiceRequestStatus[]
+                  ).map((status) => (
+                    <Badge key={status} variant={statusBadgeVariant(status)}>
+                      {SERVICE_REQUEST_STATUS_LABELS[status]} {statusCounts[status]}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ) : (
-          <h1 className="text-2xl font-bold">Mensajes</h1>
+          <h1 className="text-xl font-semibold tracking-tight">Mensajes</h1>
         )}
       </div>
 
-      <div className="flex min-h-0 flex-1 overflow-hidden rounded-xl border border-border">
-        <div className="w-full shrink-0 overflow-y-auto border-r border-border sm:w-80">
+      <div className="flex min-h-0 flex-1 overflow-hidden rounded-md border border-border bg-card">
+        <div className="hidden w-72 shrink-0 overflow-y-auto border-r border-border sm:block sm:w-80">
           {conversations.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
               <MessageSquare className="mx-auto mb-2 h-8 w-8 opacity-50" />
@@ -484,7 +491,7 @@ function MessagesContent() {
                   key={conv.id}
                   type="button"
                   onClick={() => openConversation(conv)}
-                  className={`flex w-full items-center gap-3 p-4 text-left transition-colors hover:bg-accent/50 ${
+                  className={`flex w-full items-center gap-3 px-3 py-3 text-left transition-colors hover:bg-accent/50 ${
                     activeId === conv.id ? "bg-accent" : ""
                   } ${unreadCount > 0 ? "bg-primary/5" : ""}`}
                 >
@@ -493,6 +500,7 @@ function MessagesContent() {
                       <Avatar
                         src={conv.otherParticipant.avatar_url}
                         name={conv.otherParticipant.display_name}
+                        size="sm"
                       />
                     )}
                     {unreadCount > 0 && (
@@ -519,7 +527,7 @@ function MessagesContent() {
                     )}
                     {conv.lastMessage && (
                       <p
-                        className={`mt-1 truncate text-xs ${
+                        className={`mt-0.5 truncate text-xs ${
                           unreadCount > 0
                             ? "font-medium text-foreground"
                             : "text-muted-foreground"
@@ -545,15 +553,15 @@ function MessagesContent() {
           )}
         </div>
 
-        <div className="hidden flex-1 flex-col sm:flex">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           {activeId && userId ? (
             <>
               {serviceFilter?.isOwner &&
                 activeRequest?.requestId &&
                 activeRequest.requestStatus && (
-                  <div className="shrink-0 border-b border-border px-4 py-3">
-                    <p className="mb-2 text-xs font-medium text-muted-foreground">
-                      Estado de la solicitud
+                  <div className="shrink-0 border-b border-border px-4 py-2.5">
+                    <p className="mb-1.5 font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      Estado
                     </p>
                     <ServiceRequestStatusActions
                       requestId={activeRequest.requestId}
@@ -579,7 +587,7 @@ function MessagesContent() {
               />
             </>
           ) : (
-            <div className="flex flex-1 items-center justify-center text-muted-foreground">
+            <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
               Selecciona una conversación
             </div>
           )}

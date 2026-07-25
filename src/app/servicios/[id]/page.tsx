@@ -3,8 +3,6 @@ import { notFound } from "next/navigation";
 import { MapPin, Clock, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Avatar } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import { AvailabilityCalendar } from "@/components/calendar/availability-calendar";
 import { RequestServiceButton } from "@/components/services/request-service-button";
@@ -107,6 +105,21 @@ export default async function ServiceDetailPage({
     .order("date")
     .limit(60);
 
+  const facts = [
+    {
+      label: "Modalidad",
+      value: WORK_MODALITY_LABELS[service.work_modality as WorkModality],
+    },
+    service.estimated_duration
+      ? { label: "Duración", value: service.estimated_duration }
+      : null,
+    service.location_city
+      ? { label: "Ubicación", value: service.location_city }
+      : prof.location_city
+        ? { label: "Ubicación", value: prof.location_city }
+        : null,
+  ].filter(Boolean) as { label: string; value: string }[];
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <Breadcrumbs
@@ -116,12 +129,15 @@ export default async function ServiceDetailPage({
         ]}
       />
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="mt-6 grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <div className="min-w-0 space-y-8">
           {media && media.length > 0 && (
             <div className="grid gap-3 sm:grid-cols-2">
               {media.map((item) => (
-                <div key={item.id} className="overflow-hidden rounded-xl border border-border">
+                <div
+                  key={item.id}
+                  className="overflow-hidden rounded-md border border-border bg-surface"
+                >
                   {item.media_type === "video" ? (
                     <video
                       src={item.media_url}
@@ -141,155 +157,153 @@ export default async function ServiceDetailPage({
             </div>
           )}
 
-          <div>
+          <header>
             {category && (
-              <Badge variant="primary" className="mb-2">
+              <p className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
                 {category.name}
-              </Badge>
-            )}
-            <h1 className="text-2xl font-bold">{service.title}</h1>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <Badge variant="muted">
-                {WORK_MODALITY_LABELS[service.work_modality as WorkModality]}
-              </Badge>
-              {service.estimated_duration && (
-                <Badge variant="muted">
-                  <Clock className="mr-1 h-3 w-3" />
-                  {service.estimated_duration}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Descripción del servicio</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                {service.description}
               </p>
-            </CardContent>
-          </Card>
+            )}
+            <h1 className="mt-2 text-balance text-3xl font-semibold tracking-tight sm:text-4xl">
+              {service.title}
+            </h1>
 
-          {service.included_materials && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Material incluido</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground">{service.included_materials}</p>
-              </CardContent>
-            </Card>
-          )}
+            {facts.length > 0 && (
+              <dl className="mt-5 grid gap-3 sm:grid-cols-3">
+                {facts.map((fact) => (
+                  <div
+                    key={fact.label}
+                    className="rounded-md bg-surface px-3.5 py-3"
+                  >
+                    <dt className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                      {fact.label}
+                    </dt>
+                    <dd className="mt-1 text-sm font-medium text-foreground">
+                      {fact.label === "Duración" ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                          {fact.value}
+                        </span>
+                      ) : fact.label === "Ubicación" ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <MapPin className="h-3.5 w-3.5 text-muted-foreground" />
+                          {fact.value}
+                        </span>
+                      ) : (
+                        fact.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </header>
 
-          {service.terms && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Condiciones</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                  {service.terms}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+          <section>
+            <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+              Qué incluye
+            </h2>
+            <p className="mt-3 max-w-prose whitespace-pre-wrap text-base leading-relaxed text-foreground">
+              {service.description}
+            </p>
+          </section>
 
-        <div className="space-y-6">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="text-center">
-                {service.price_amount ? (
-                  <p className="text-3xl font-bold text-primary">
-                    {formatCurrency(service.price_amount, service.currency)}
+          {(service.included_materials || service.terms) && (
+            <section className="divide-y divide-border border-y border-border">
+              {service.included_materials && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    Material
+                  </h3>
+                  <p className="text-sm leading-5 text-foreground">
+                    {service.included_materials}
                   </p>
-                ) : service.price_min ? (
-                  <p className="text-2xl font-bold">
-                    {formatCurrency(service.price_min, service.currency)}
-                    {service.price_max &&
-                      ` — ${formatCurrency(service.price_max, service.currency)}`}
-                  </p>
-                ) : (
-                  <p className="text-lg text-muted-foreground">
-                    {PRICING_TYPE_LABELS[service.pricing_type as PricingType]}
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {PRICING_TYPE_LABELS[service.pricing_type as PricingType]}
-                </p>
-              </div>
-
-              {isOwner ? (
-                <ServiceOwnerRequestsPanel serviceId={id} requests={ownerRequests} />
-              ) : (
-                <div className="mt-6 space-y-3">
-                  <RequestServiceButton
-                    serviceId={id}
-                    serviceTitle={service.title}
-                    professionalId={prof.id}
-                  />
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Profesional</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <Link
-                href={`/profesionales/${prof.id}`}
-                className="flex items-center gap-3 group"
-              >
-                <Avatar
-                  src={prof.profiles.avatar_url}
-                  name={prof.profiles.display_name}
-                  size="lg"
-                />
-                <div>
-                  <p className="font-medium group-hover:text-primary transition-colors">
-                    {prof.profiles.display_name}
+              {service.terms && (
+                <div className="grid gap-2 py-5 sm:grid-cols-[8rem_minmax(0,1fr)] sm:items-baseline sm:gap-6">
+                  <h3 className="font-mono text-[0.6875rem] font-medium uppercase leading-5 tracking-[0.12em] text-muted-foreground">
+                    Condiciones
+                  </h3>
+                  <p className="whitespace-pre-wrap text-sm leading-5 text-foreground">
+                    {service.terms}
                   </p>
-                  {prof.location_city && (
-                    <p className="text-sm text-muted-foreground flex items-center gap-1">
-                      <MapPin className="h-3 w-3" />
-                      {prof.location_city}
-                    </p>
-                  )}
-                  {prof.is_available && (
-                    <p className="text-xs text-green-400 flex items-center gap-1 mt-1">
-                      <Check className="h-3 w-3" />
-                      Disponible
-                    </p>
-                  )}
                 </div>
-              </Link>
-            </CardContent>
-          </Card>
-
-          {service.location_city && (
-            <Card>
-              <CardContent className="pt-6 text-sm">
-                <p className="font-medium">Ubicación del servicio</p>
-                <p className="text-muted-foreground">{service.location_city}</p>
-              </CardContent>
-            </Card>
+              )}
+            </section>
           )}
 
           {availability && availability.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Disponibilidad</CardTitle>
-              </CardHeader>
-              <CardContent>
+            <section>
+              <h2 className="font-mono text-[0.6875rem] font-medium uppercase tracking-[0.14em] text-stage">
+                Disponibilidad
+              </h2>
+              <div className="mt-4">
                 <AvailabilityCalendar slots={availability} readOnly compact />
-              </CardContent>
-            </Card>
+              </div>
+            </section>
           )}
         </div>
+
+        <aside className="space-y-4 lg:sticky lg:top-24">
+          <div className="rounded-md border border-border bg-card p-5">
+            <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              {PRICING_TYPE_LABELS[service.pricing_type as PricingType]}
+            </p>
+            {service.price_amount ? (
+              <p className="mt-2 text-3xl font-semibold tracking-tight text-primary">
+                {formatCurrency(service.price_amount, service.currency)}
+              </p>
+            ) : service.price_min ? (
+              <p className="mt-2 text-2xl font-semibold tracking-tight">
+                {formatCurrency(service.price_min, service.currency)}
+                {service.price_max &&
+                  ` – ${formatCurrency(service.price_max, service.currency)}`}
+              </p>
+            ) : (
+              <p className="mt-2 text-lg font-medium text-foreground">
+                A consultar
+              </p>
+            )}
+
+            {isOwner ? (
+              <ServiceOwnerRequestsPanel serviceId={id} requests={ownerRequests} />
+            ) : (
+              <div className="mt-5">
+                <RequestServiceButton
+                  serviceId={id}
+                  serviceTitle={service.title}
+                  professionalId={prof.id}
+                />
+                <p className="mt-2.5 text-center text-xs text-muted-foreground">
+                  Indica fechas y detalles. Llega como mensaje al profesional.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <Link
+            href={`/profesionales/${prof.id}`}
+            className="flex items-center gap-3 rounded-md border border-border bg-card p-4 transition-colors duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-stage/35 hover:bg-surface"
+          >
+            <Avatar
+              src={prof.profiles.avatar_url}
+              name={prof.profiles.display_name}
+              size="md"
+            />
+            <div className="min-w-0">
+              <p className="font-mono text-[0.625rem] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                Profesional
+              </p>
+              <p className="truncate text-sm font-medium">{prof.profiles.display_name}</p>
+              {prof.is_available && (
+                <p className="mt-0.5 flex items-center gap-1 text-xs text-green-700">
+                  <Check className="h-3 w-3" />
+                  Disponible
+                </p>
+              )}
+            </div>
+          </Link>
+        </aside>
       </div>
     </div>
   );

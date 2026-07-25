@@ -5,7 +5,9 @@ import { AuthRequiredPlaceholder } from "@/components/auth/auth-required-placeho
 
 export default async function CalendarPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return <AuthRequiredPlaceholder message="Inicia sesión para ver tu calendario" />;
@@ -22,12 +24,12 @@ export default async function CalendarPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-      <h1 className="text-2xl font-bold">Calendario de disponibilidad</h1>
-      <p className="mt-2 text-muted-foreground">
-        Marca los días en los que estás disponible, ocupado o de vacaciones
+    <div className="mx-auto max-w-xl px-4 py-6 sm:px-6">
+      <h1 className="text-xl font-semibold tracking-tight">Disponibilidad</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Elige estado, rellena el mes y ajusta días si hace falta.
       </p>
-      <div className="mt-8">
+      <div className="mt-4">
         <AvailabilityEditor />
       </div>
     </div>
